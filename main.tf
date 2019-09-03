@@ -16,23 +16,23 @@ resource "aws_security_group" "this_eks_controlplane" {
   vpc_id      = data.aws_vpc.this.id
 
   ingress {
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = [data.aws_vpc.this.cidr_block]
   }
 
   egress {
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = [data.aws_vpc.this.cidr_block]
   }
 
   egress {
-    from_port       = 1025
-    to_port         = 65535
-    protocol        = "tcp"
+    from_port   = 1025
+    to_port     = 65535
+    protocol    = "tcp"
     cidr_blocks = [data.aws_vpc.this.cidr_block]
   }
 
@@ -139,8 +139,8 @@ POLICY
 }
 
 resource "aws_iam_policy" "this" {
-  name = "alb-ingress-controller"
-  path = "/"
+  name        = "alb-ingress-controller"
+  path        = "/"
   description = "Allow ingress controllers to interact with elasticloadbalancing"
 
   policy = file("${path.module}/ingress/alb-ingress-controller-policy.template")
@@ -352,7 +352,7 @@ resource "kubernetes_deployment" "this" {
 
     strategy {
       rolling_update {
-        max_surge = 1
+        max_surge       = 1
         max_unavailable = 1
       }
       type = "RollingUpdate"
@@ -367,15 +367,15 @@ resource "kubernetes_deployment" "this" {
 
       spec {
         container {
-          args = ["--ingress-class=alb", "--cluster-name=${var.cluster_name}", "--aws-region=us-east-2"]
-          image = "894847497797.dkr.ecr.us-west-2.amazonaws.com/aws-alb-ingress-controller:v1.0.0"
-          name  = "server"
+          args              = ["--ingress-class=alb", "--cluster-name=${var.cluster_name}", "--aws-region=us-east-2"]
+          image             = "894847497797.dkr.ecr.us-west-2.amazonaws.com/aws-alb-ingress-controller:v1.0.0"
+          name              = "server"
           image_pull_policy = "Always"
 
           resources {}
 
         }
-        service_account_name = "alb-ingress"
+        service_account_name            = "alb-ingress"
         automount_service_account_token = true
       }
     }
