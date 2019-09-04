@@ -30,6 +30,10 @@ output "endpoint" {
   value = module.standard.endpoint
 }
 
+output "certificate" {
+  value = module.standard.certificate
+}
+
 output "eks_kubeconfig" {
   value = module.standard.eks_kubeconfig
 }

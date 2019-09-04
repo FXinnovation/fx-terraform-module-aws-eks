@@ -30,6 +30,10 @@ output "endpoint" {
   value = aws_eks_cluster.this.endpoint
 }
 
+output "certificate" {
+  value = aws_eks_cluster.this.certificate_authority.0.data
+}
+
 output "eks_kubeconfig" {
   value = local.kubeconfig
 
