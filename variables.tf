@@ -114,8 +114,8 @@ variable "worker_asg_name" {
 }
 
 variable "worker_asg_tags" {
-  description = "Map of tags to dynamically add to autoscaling group"
-  default     = {}
+  description = "Maps of tags to dynamically add to autoscaling group"
+  default     = []
 }
 
 variable "efs_name" {

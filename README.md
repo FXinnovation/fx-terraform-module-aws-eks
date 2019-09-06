@@ -11,6 +11,7 @@ Terraform module to deploy an eks cluster.
 | aws\_vpc | Name of the vpc where the eks cluster is created | string | n/a | yes |
 | aws\_vpc\_cidr\_block | cidr block of the vpc where the eks cluster is created | string | n/a | yes |
 | cluster\_name | Name of the EKS cluster | string | n/a | yes |
+| efs\_file\_system\_tags | Map of tags to apply to the efs file system | map | `{}` | no |
 | efs\_name | Name of the security group associated with efs | string | n/a | yes |
 | efs\_security\_group\_name | Name of the security group associated with efs | string | n/a | yes |
 | eks\_ami | Name of the ami to use for eks worker nodes | string | `"amazon-eks-node-1.13*"` | no |
@@ -18,6 +19,7 @@ Terraform module to deploy an eks cluster.
 | eks\_master\_iam\_role\_name | Name of the iam role associated with eks master | string | n/a | yes |
 | eks\_node\_userdata | Customized script to launch on the woker nodes at first startup to join the cluster | string | `""` | no |
 | eks\_worker\_iam\_role\_name | Name of the iam role associated with eks workers | string | n/a | yes |
+| master\_role\_tags | Map of tags to apply to the IAM role for master | map | `{}` | no |
 | master\_security\_group\_name | Name of the eks master security group. | string | `"aws-sg-eks-master"` | no |
 | node\_security\_group\_name | Name of the eks nodes security group. | string | `"aws-sg-eks-nodes"` | no |
 | security\_group\_ids | Additional list of security group IDs for the eks cluster | list | `[]` | no |
@@ -29,10 +31,11 @@ Terraform module to deploy an eks cluster.
 | worker\_asg\_max\_size | Maximum number of worker nodes | string | `"3"` | no |
 | worker\_asg\_min\_size | Minimum number of worker nodes | string | `"1"` | no |
 | worker\_asg\_name | Name of the autoscalinggroup for worker nodes | string | n/a | yes |
-| worker\_asg\_tags | Map of tags to dynamically add to autoscaling group | map | `{}` | no |
+| worker\_asg\_tags | Maps of tags to dynamically add to autoscaling group | list | `[]` | no |
 | worker\_instance\_type | Type of ec2 instance to use for worker nodes | string | n/a | yes |
 | worker\_name\_prefix | Prefix that wiil be used in the ec2 instance name for worker nodes | string | n/a | yes |
 | worker\_node\_public\_address | Boolean that indicates if eks worker nodes should have a public ip or not | string | `"false"` | no |
+| worker\_role\_tags | Map of tags to apply to the IAM role for workers | map | `{}` | no |
 
 ## Outputs
 
