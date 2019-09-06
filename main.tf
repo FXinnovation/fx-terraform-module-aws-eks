@@ -1,9 +1,19 @@
-data "aws_vpc" "this" {
-  default = true
+resource "aws_efs_file_system" "this" {
+  encrypted = true
+
+  tags = merge(
+    {
+      "Terraform" = "true"
+    },
+    var.tags,
+    var.efs_file_system_tags
+  )
 }
 
-data "aws_subnet_ids" "this" {
-  vpc_id = data.aws_vpc.this.id
+resource "aws_efs_mount_target" "this" {
+  count          = length(var.aws_subnet_ids)
+  file_system_id = aws_efs_file_system.this.id
+  subnet_id      = tolist(var.aws_subnet_ids)[count.index]
 }
 
 ##################################
@@ -13,39 +23,42 @@ data "aws_subnet_ids" "this" {
 resource "aws_security_group" "this_eks_controlplane" {
   name        = var.master_security_group_name
   description = "Communication between the control plane and worker nodegroups"
-  vpc_id      = data.aws_vpc.this.id
+  vpc_id      = var.aws_vpc
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [data.aws_vpc.this.cidr_block]
+    cidr_blocks = [var.aws_vpc_cidr_block]
   }
 
   egress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [data.aws_vpc.this.cidr_block]
+    cidr_blocks = [var.aws_vpc_cidr_block]
   }
 
   egress {
     from_port   = 1025
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = [data.aws_vpc.this.cidr_block]
+    cidr_blocks = [var.aws_vpc_cidr_block]
   }
 
-  tags = {
-    Name = "terraform-eks"
-  }
+  tags = merge(
+    {
+      "Terraform" = "true"
+    },
+    var.tags,
+    var.sg_control_plane_tags
+  )
 }
 
 resource "aws_security_group" "this_eks_nodes" {
   name        = var.node_security_group_name
   description = "Communication between the control plane and worker nodes"
-  vpc_id      = data.aws_vpc.this.id
-
+  vpc_id      = var.aws_vpc
   ingress {
     from_port   = 22
     to_port     = 22
@@ -81,9 +94,13 @@ resource "aws_security_group" "this_eks_nodes" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "terraform-eks"
-  }
+  tags = merge(
+    {
+      "Terraform" = "true"
+    },
+    var.tags,
+    var.sg_workers_tags
+  )
 }
 
 ######################################################
@@ -91,7 +108,7 @@ resource "aws_security_group" "this_eks_nodes" {
 ######################################################
 
 resource "aws_iam_role" "eks-master" {
-  name = "terraform-eks-cluster"
+  name = var.eks_master_iam_role_name
 
   assume_role_policy = <<POLICY
 {
@@ -107,6 +124,13 @@ resource "aws_iam_role" "eks-master" {
   ]
 }
 POLICY
+  tags = merge(
+    {
+      "Terraform" = "true"
+    },
+    var.tags,
+    var.master_role_tags
+  )
 }
 
 resource "aws_iam_role_policy_attachment" "eks-master-AmazonEKSClusterPolicy" {
@@ -120,7 +144,7 @@ resource "aws_iam_role_policy_attachment" "eks-master-AmazonEKSServicePolicy" {
 }
 
 resource "aws_iam_role" "eks-node" {
-  name = "terraform-eks-tf-eks-node"
+  name = var.eks_worker_iam_role_name
 
   assume_role_policy = <<POLICY
 {
@@ -136,14 +160,21 @@ resource "aws_iam_role" "eks-node" {
   ]
 }
 POLICY
+  tags = merge(
+    {
+      "Terraform" = "true"
+    },
+    var.tags,
+    var.worker_role_tags
+  )
 }
 
 resource "aws_iam_policy" "this" {
-  name        = "alb-ingress-controller"
+  name        = var.eks_ingress_policy
   path        = "/"
   description = "Allow ingress controllers to interact with elasticloadbalancing"
 
-  policy = file("${path.module}/ingress/alb-ingress-controller-policy.template")
+  policy = file("${path.module}/templates/alb-ingress-controller-policy.template")
 }
 
 resource "aws_iam_role_policy_attachment" "eks-node-AmazonEKSWorkerNodePolicy" {
@@ -180,20 +211,15 @@ resource "aws_eks_cluster" "this" {
   role_arn = aws_iam_role.eks-master.arn
 
   vpc_config {
-    security_group_ids = [aws_security_group.this_eks_controlplane.id]
-    subnet_ids         = flatten(data.aws_subnet_ids.this.ids)
+    security_group_ids = concat([aws_security_group.this_eks_controlplane.id], var.security_group_ids)
+    subnet_ids         = flatten(var.aws_subnet_ids)
   }
-
-  depends_on = [
-    "aws_iam_role_policy_attachment.eks-master-AmazonEKSClusterPolicy",
-    "aws_iam_role_policy_attachment.eks-master-AmazonEKSServicePolicy",
-  ]
 }
 
 data "aws_ami" "this" {
   filter {
     name   = "name"
-    values = ["amazon-eks-node-1.13*"]
+    values = [var.eks_ami]
   }
 
   most_recent = true
@@ -210,14 +236,13 @@ USERDATA
 }
 
 resource "aws_launch_configuration" "this" {
-  associate_public_ip_address = true
+  associate_public_ip_address = var.worker_node_public_address
   iam_instance_profile        = aws_iam_instance_profile.node.name
-  image_id                    = data.aws_ami.this.id
-  instance_type               = "m5.xlarge"
-  name_prefix                 = "terraform-eks"
-  security_groups             = [aws_security_group.this_eks_nodes.id]
-  user_data_base64            = base64encode(local.eks-node-userdata)
-  key_name                    = var.keypair-name
+  image_id                    = var.worker_ami == "" ? data.aws_ami.this.id : var.worker_ami
+  instance_type               = var.worker_instance_type
+  name_prefix                 = var.worker_name_prefix
+  security_groups             = concat([aws_security_group.this_eks_nodes.id], var.security_group_ids)
+  user_data_base64            = var.eks_node_userdata == "" ? base64encode(local.eks-node-userdata) : var.eks_node_userdata
 
   lifecycle {
     create_before_destroy = true
@@ -225,12 +250,12 @@ resource "aws_launch_configuration" "this" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  desired_capacity     = "2"
+  desired_capacity     = var.worker_asg_desired_capacity
   launch_configuration = aws_launch_configuration.this.id
-  max_size             = "3"
-  min_size             = "1"
-  name                 = "terraform-tf-eks"
-  vpc_zone_identifier  = flatten(data.aws_subnet_ids.this.ids)
+  max_size             = var.worker_asg_max_size
+  min_size             = var.worker_asg_min_size
+  name                 = var.worker_asg_name
+  vpc_zone_identifier  = flatten(var.aws_subnet_ids)
 
   tag {
     key                 = "Name"
@@ -243,10 +268,19 @@ resource "aws_autoscaling_group" "this" {
     value               = "owned"
     propagate_at_launch = true
   }
+
+  dynamic "tag" {
+    for_each = var.worker_asg_tags
+    content {
+      key                 = tag.value.key
+      value               = tag.value.value
+      propagate_at_launch = tag.value.propagate
+    }
+  }
 }
 
-data "external" "aws_iam_authenticator" {
-  program = ["sh", "-c", "aws-iam-authenticator token -i ${var.cluster_name} | jq -r -c .status"]
+data "aws_eks_cluster_auth" "this" {
+  name = var.cluster_name
 }
 
 ############################
@@ -256,7 +290,7 @@ data "external" "aws_iam_authenticator" {
 provider "kubernetes" {
   host                   = aws_eks_cluster.this.endpoint
   cluster_ca_certificate = base64decode(aws_eks_cluster.this.certificate_authority.0.data)
-  token                  = data.external.aws_iam_authenticator.result.token
+  token                  = data.aws_eks_cluster_auth.this.token
   load_config_file       = false
   version                = "~> 1.5"
 }
@@ -277,9 +311,6 @@ resource "kubernetes_config_map" "aws_auth" {
 EOF
   }
 
-  depends_on = [
-    "aws_eks_cluster.this",
-  ]
 }
 
 resource "kubernetes_service_account" "alb-ingress" {
@@ -380,36 +411,4 @@ resource "kubernetes_deployment" "this" {
       }
     }
   }
-}
-
-# generate KUBECONFIG as output to save in ~/.kube/config locally
-# save the 'terraform output eks_kubeconfig > config', run 'mv config ~/.kube/config' to use it for kubectl
-locals {
-  kubeconfig = <<KUBECONFIG
-
-apiVersion: v1
-clusters:
-- cluster:
-    server: ${aws_eks_cluster.this.endpoint}
-    certificate-authority-data: ${aws_eks_cluster.this.certificate_authority.0.data}
-  name: ${var.cluster_name}
-contexts:
-- context:
-    cluster: ${var.cluster_name}
-    user: aws
-  name: aws
-current-context: aws
-kind: Config
-preferences: {}
-users:
-- name: aws
-  user:
-    exec:
-      apiVersion: client.authentication.k8s.io/v1alpha1
-      command: aws-iam-authenticator
-      args:
-        - "token"
-        - "-i"
-        - "${var.cluster_name}"
-KUBECONFIG
 }
