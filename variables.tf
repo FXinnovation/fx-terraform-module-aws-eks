@@ -142,3 +142,8 @@ variable "worker_role_tags" {
   description = "Map of tags to apply to the IAM role for workers"
   default     = {}
 }
+
+variable "eks_worker_iam_instance_profile" {
+  description = "Name of the instance profile for worker nodes"
+  type        = "string"
+}

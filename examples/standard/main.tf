@@ -41,5 +41,6 @@ module "standard" {
   aws_subnet_ids             = data.aws_subnet_ids.default.ids
   master_security_group_name = "aws-sg-eks-master-${random_string.this.result}"
   node_security_group_name   = "aws-sg-eks-nodes-${random_string.this.result}"
+  eks_worker_iam_instance_profile = "terraform-eks-node-${random_string.this.result}"
 
 }

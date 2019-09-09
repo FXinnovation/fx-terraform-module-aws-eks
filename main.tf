@@ -198,7 +198,7 @@ resource "aws_iam_role_policy_attachment" "alb-ingress-controller" {
 }
 
 resource "aws_iam_instance_profile" "node" {
-  name = "terraform-eks-node"
+  name = var.eks_worker_iam_instance_profile
   role = aws_iam_role.eks-node.name
 }
 
