@@ -41,8 +41,9 @@ Terraform module to deploy an eks cluster.
 
 | Name | Description |
 |------|-------------|
-| certificate |  |
-| cluster |  |
+| cluster-name |  |
+| cluster-public-certificate |  |
+| efs-id |  |
 | eks-cluster-endpoint |  |
 | master-role-id |  |
 | master-sg-id |  |
