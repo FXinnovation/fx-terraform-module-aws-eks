@@ -18,6 +18,7 @@ Terraform module to deploy an eks cluster.
 | eks\_ingress\_policy | Name of the policy that allows ingress to interact with aws resources | string | n/a | yes |
 | eks\_master\_iam\_role\_name | Name of the iam role associated with eks master | string | n/a | yes |
 | eks\_node\_userdata | Customized script to launch on the woker nodes at first startup to join the cluster | string | `""` | no |
+| eks\_worker\_iam\_instance\_profile | Name of the instance profile for worker nodes | string | n/a | yes |
 | eks\_worker\_iam\_role\_name | Name of the iam role associated with eks workers | string | n/a | yes |
 | master\_role\_tags | Map of tags to apply to the IAM role for master | map | `{}` | no |
 | master\_security\_group\_name | Name of the eks master security group. | string | `"aws-sg-eks-master"` | no |
