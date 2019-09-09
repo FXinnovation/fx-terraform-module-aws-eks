@@ -14,7 +14,7 @@ output "worker-role-id" {
   value = aws_iam_role.eks-node.id
 }
 
-output "cluster" {
+output "cluster-name" {
   value = aws_eks_cluster.this.id
 }
 
@@ -26,6 +26,10 @@ output "eks-cluster-endpoint" {
   value = aws_eks_cluster.this.endpoint
 }
 
-output "certificate" {
+output "cluster-public-certificate" {
   value = aws_eks_cluster.this.certificate_authority.0.data
+}
+
+output "efs-id" {
+  value = aws_efs_file_system.this.id
 }

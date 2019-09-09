@@ -32,7 +32,7 @@ module "standard" {
   aws_vpc_cidr_block         = data.aws_vpc.default.cidr_block
   eks_master_iam_role_name   = "terraform-eks-cluster-${random_string.this.result}"
   eks_worker_iam_role_name   = "terraform-eks-nodes-${random_string.this.result}"
-  eks_ingress_policy         = "alb-ingress-controller"
+  eks_ingress_policy         = "alb-ingress-controller-${random_string.this.result}"
   worker_instance_type       = "m5.xlarge"
   worker_name_prefix         = "terraform-eks-node-${random_string.this.result}"
   worker_asg_name            = "terraform-eks-asg-${random_string.this.result}"

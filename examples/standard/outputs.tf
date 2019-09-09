@@ -14,8 +14,8 @@ output "worker-role-id" {
   value = module.standard.worker-role-id
 }
 
-output "cluster" {
-  value = module.standard.cluster
+output "cluster-name" {
+  value = module.standard.cluster-name
 }
 
 output "worker-asg-id" {
@@ -26,6 +26,6 @@ output "eks-cluster-endpoint" {
   value = module.standard.eks-cluster-endpoint
 }
 
-output "certificate" {
-  value = module.standard.certificate
+output "cluster-public-certificate" {
+  value = module.standard.cluster-public-certificate
 }
