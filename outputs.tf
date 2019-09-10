@@ -1,35 +1,35 @@
-output "master-sg-id" {
-  value = aws_security_group.this_eks_controlplane.id
+output "master_sg_id" {
+  value = aws_security_group.this_master.id
 }
 
-output "worker-sg-id" {
-  value = aws_security_group.this_eks_nodes.id
+output "worker_sg_id" {
+  value = aws_security_group.this_worker.id
 }
 
-output "master-role-id" {
-  value = aws_iam_role.eks-master.id
+output "master_role_id" {
+  value = aws_iam_role.master.id
 }
 
-output "worker-role-id" {
-  value = aws_iam_role.eks-node.id
+output "worker_role_id" {
+  value = aws_iam_role.worker.id
 }
 
-output "cluster-name" {
+output "cluster_name" {
   value = aws_eks_cluster.this.id
 }
 
-output "worker-asg-id" {
+output "worker_asg_id" {
   value = aws_autoscaling_group.this.id
 }
 
-output "eks-cluster-endpoint" {
+output "eks_cluster_endpoint" {
   value = aws_eks_cluster.this.endpoint
 }
 
-output "cluster-public-certificate" {
+output "cluster_public_certificate" {
   value = aws_eks_cluster.this.certificate_authority.0.data
 }
 
-output "efs-id" {
+output "efs_id" {
   value = aws_efs_file_system.this.id
 }

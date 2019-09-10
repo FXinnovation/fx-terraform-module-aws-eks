@@ -16,13 +16,13 @@ resource "aws_efs_mount_target" "this" {
   subnet_id      = tolist(var.aws_subnet_ids)[count.index]
 }
 
-##################################
-# Security groups for eks master #
-##################################
+#####
+# Security groups for eks master
+#####
 
-resource "aws_security_group" "this_eks_controlplane" {
+resource "aws_security_group" "this_master" {
   name        = var.master_security_group_name
-  description = "Communication between the control plane and worker nodegroups"
+  description = "Master from/to worker node groups"
   vpc_id      = var.aws_vpc
 
   ingress {
@@ -51,13 +51,13 @@ resource "aws_security_group" "this_eks_controlplane" {
       "Terraform" = "true"
     },
     var.tags,
-    var.sg_control_plane_tags
+    var.master_security_group_tags
   )
 }
 
-resource "aws_security_group" "this_eks_nodes" {
-  name        = var.node_security_group_name
-  description = "Communication between the control plane and worker nodes"
+resource "aws_security_group" "this_worker" {
+  name        = var.worker_security_group_name
+  description = "Worker node groups from/to master"
   vpc_id      = var.aws_vpc
   ingress {
     from_port   = 22
@@ -70,14 +70,14 @@ resource "aws_security_group" "this_eks_nodes" {
     from_port       = 1025
     to_port         = 65535
     protocol        = "tcp"
-    security_groups = [aws_security_group.this_eks_controlplane.id]
+    security_groups = [aws_security_group.this_master.id]
   }
 
   ingress {
     from_port       = 443
     to_port         = 443
     protocol        = "tcp"
-    security_groups = [aws_security_group.this_eks_controlplane.id]
+    security_groups = [aws_security_group.this_master.id]
   }
 
   ingress {
@@ -99,16 +99,16 @@ resource "aws_security_group" "this_eks_nodes" {
       "Terraform" = "true"
     },
     var.tags,
-    var.sg_workers_tags
+    var.worker_security_group_tags
   )
 }
 
-######################################################
-# Setup for IAM roles needed to setup an EKS cluster #
-######################################################
+#####
+# IAM roles
+#####
 
-resource "aws_iam_role" "eks-master" {
-  name = var.eks_master_iam_role_name
+resource "aws_iam_role" "master" {
+  name = var.master_iam_role_name
 
   assume_role_policy = <<POLICY
 {
@@ -133,18 +133,18 @@ POLICY
   )
 }
 
-resource "aws_iam_role_policy_attachment" "eks-master-AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "master_cluster_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks-master.name
+  role       = aws_iam_role.master.name
 }
 
-resource "aws_iam_role_policy_attachment" "eks-master-AmazonEKSServicePolicy" {
+resource "aws_iam_role_policy_attachment" "master_service_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.eks-master.name
+  role       = aws_iam_role.master.name
 }
 
-resource "aws_iam_role" "eks-node" {
-  name = var.eks_worker_iam_role_name
+resource "aws_iam_role" "worker" {
+  name = var.worker_iam_role_name
 
   assume_role_policy = <<POLICY
 {
@@ -170,48 +170,48 @@ POLICY
 }
 
 resource "aws_iam_policy" "this" {
-  name        = var.eks_ingress_policy
+  name        = var.ingress_policy_name
   path        = "/"
   description = "Allow ingress controllers to interact with elasticloadbalancing"
 
-  policy = file("${path.module}/templates/alb-ingress-controller-policy.template")
+  policy = file("${path.module}/templates/alb-ingress-controller-policy.json")
 }
 
-resource "aws_iam_role_policy_attachment" "eks-node-AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "worker_node_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.eks-node.name
+  role       = aws_iam_role.worker.name
 }
 
-resource "aws_iam_role_policy_attachment" "eks-node-AmazonEKS_CNI_Policy" {
+resource "aws_iam_role_policy_attachment" "worker_cni_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.eks-node.name
+  role       = aws_iam_role.worker.name
 }
 
-resource "aws_iam_role_policy_attachment" "eks-node-AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "worker_container_registry" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.eks-node.name
+  role       = aws_iam_role.worker.name
 }
 
-resource "aws_iam_role_policy_attachment" "alb-ingress-controller" {
+resource "aws_iam_role_policy_attachment" "alb_ingress_controller" {
   policy_arn = aws_iam_policy.this.arn
-  role       = aws_iam_role.eks-node.name
+  role       = aws_iam_role.worker.name
 }
 
 resource "aws_iam_instance_profile" "node" {
-  name = var.eks_worker_iam_instance_profile
-  role = aws_iam_role.eks-node.name
+  name = var.worker_iam_instance_profile
+  role = aws_iam_role.worker.name
 }
 
-###############################
-# Master and workers creation #
-###############################
+#####
+# Master and workers creation
+#####
 
 resource "aws_eks_cluster" "this" {
   name     = var.cluster_name
-  role_arn = aws_iam_role.eks-master.arn
+  role_arn = aws_iam_role.master.arn
 
   vpc_config {
-    security_group_ids = concat([aws_security_group.this_eks_controlplane.id], var.security_group_ids)
+    security_group_ids = concat([aws_security_group.this_master.id], var.security_group_ids)
     subnet_ids         = flatten(var.aws_subnet_ids)
   }
 }
@@ -226,13 +226,13 @@ data "aws_ami" "this" {
   owners      = ["602401143452"] # Amazon EKS AMI Account ID
 }
 
-# More information: https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html
-locals {
-  eks-node-userdata = <<USERDATA
-#!/bin/bash
-set -o xtrace
-/etc/eks/bootstrap.sh --apiserver-endpoint '${aws_eks_cluster.this.endpoint}' --b64-cluster-ca '${aws_eks_cluster.this.certificate_authority.0.data}' '${var.cluster_name}'
-USERDATA
+data "template_file" "this" {
+  template = file("${path.module}/templates/userdata.tpl")
+  vars = {
+    cluster_name        = var.cluster_name
+    cluster_endpoint    = aws_eks_cluster.this.endpoint
+    cluster_certificate = aws_eks_cluster.this.certificate_authority.0.data
+  }
 }
 
 resource "aws_launch_configuration" "this" {
@@ -241,8 +241,8 @@ resource "aws_launch_configuration" "this" {
   image_id                    = var.worker_ami == "" ? data.aws_ami.this.id : var.worker_ami
   instance_type               = var.worker_instance_type
   name_prefix                 = var.worker_name_prefix
-  security_groups             = concat([aws_security_group.this_eks_nodes.id], var.security_group_ids)
-  user_data_base64            = var.eks_node_userdata == "" ? base64encode(local.eks-node-userdata) : var.eks_node_userdata
+  security_groups             = concat([aws_security_group.this_worker.id], var.security_group_ids)
+  user_data_base64            = base64encode(data.template_file.this.rendered)
 
   lifecycle {
     create_before_destroy = true
@@ -250,11 +250,11 @@ resource "aws_launch_configuration" "this" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  desired_capacity     = var.worker_asg_desired_capacity
+  desired_capacity     = var.worker_autoscalinggroup_desired_capacity
   launch_configuration = aws_launch_configuration.this.id
-  max_size             = var.worker_asg_max_size
-  min_size             = var.worker_asg_min_size
-  name                 = var.worker_asg_name
+  max_size             = var.worker_autoscalinggroup_max_size
+  min_size             = var.worker_autoscalinggroup_min_size
+  name                 = var.worker_autoscalinggroup_name
   vpc_zone_identifier  = flatten(var.aws_subnet_ids)
 
   tag {
@@ -270,7 +270,7 @@ resource "aws_autoscaling_group" "this" {
   }
 
   dynamic "tag" {
-    for_each = var.worker_asg_tags
+    for_each = var.worker_autoscalinggroup_tags
     content {
       key                 = tag.value.key
       value               = tag.value.value
@@ -279,23 +279,25 @@ resource "aws_autoscaling_group" "this" {
   }
 }
 
-data "aws_eks_cluster_auth" "this" {
-  name = var.cluster_name
-}
+#####
+# Kubernetes configuration
+#####
 
-############################
-# Kubernetes configuration #
-############################
+data "aws_eks_cluster_auth" "this" {
+  depends_on = ["aws_eks_cluster.this"]
+  name       = var.cluster_name
+}
 
 provider "kubernetes" {
   host                   = aws_eks_cluster.this.endpoint
   cluster_ca_certificate = base64decode(aws_eks_cluster.this.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.this.token
   load_config_file       = false
-  version                = "~> 1.5"
+  version                = "~> 1.9"
 }
 
 resource "kubernetes_config_map" "aws_auth" {
+  count = var.alb_enabled == "true" ? 1 : 0
   metadata {
     name      = "aws-auth"
     namespace = "kube-system"
@@ -303,7 +305,7 @@ resource "kubernetes_config_map" "aws_auth" {
 
   data = {
     mapRoles = <<EOF
-- rolearn: ${aws_iam_role.eks-node.arn}
+- rolearn: ${aws_iam_role.worker.arn}
   username: system:node:{{EC2PrivateDNSName}}
   groups:
     - system:bootstrappers
@@ -313,7 +315,8 @@ EOF
 
 }
 
-resource "kubernetes_service_account" "alb-ingress" {
+resource "kubernetes_service_account" "alb_ingress" {
+  count = var.alb_enabled == "true" ? 1 : 0
   metadata {
     name = "alb-ingress"
     labels = {
@@ -323,7 +326,8 @@ resource "kubernetes_service_account" "alb-ingress" {
   }
 }
 
-resource "kubernetes_cluster_role" "alb-ingress-controller" {
+resource "kubernetes_cluster_role" "alb_ingress_controller" {
+  count = var.alb_enabled == "true" ? 1 : 0
   metadata {
     name = "alb-ingress-controller"
     labels = {
@@ -344,7 +348,8 @@ resource "kubernetes_cluster_role" "alb-ingress-controller" {
   }
 }
 
-resource "kubernetes_cluster_role_binding" "alb-ingress-controller" {
+resource "kubernetes_cluster_role_binding" "alb_ingress_controller" {
+  count = var.alb_enabled == "true" ? 1 : 0
   metadata {
     labels = {
       app = "alb-ingress-controller"
@@ -364,6 +369,7 @@ resource "kubernetes_cluster_role_binding" "alb-ingress-controller" {
 }
 
 resource "kubernetes_deployment" "this" {
+  count = var.alb_enabled == "true" ? 1 : 0
   metadata {
     name = "alb-ingress-controller"
     labels = {

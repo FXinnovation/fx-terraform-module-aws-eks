@@ -8,17 +8,17 @@ variable "master_security_group_name" {
   default     = "aws-sg-eks-master"
 }
 
-variable "node_security_group_name" {
+variable "worker_security_group_name" {
   description = "Name of the eks nodes security group."
   default     = "aws-sg-eks-nodes"
 }
 
-variable "sg_control_plane_tags" {
+variable "master_security_group_tags" {
   description = "Map of tags to apply to the security group for eks master."
   default     = {}
 }
 
-variable "sg_workers_tags" {
+variable "worker_security_group_tags" {
   description = "Map of tags to apply to the security group for eks workers."
   default     = {}
 }
@@ -28,17 +28,17 @@ variable "tags" {
   default     = {}
 }
 
-variable "eks_master_iam_role_name" {
+variable "master_iam_role_name" {
   description = "Name of the iam role associated with eks master"
   type        = "string"
 }
 
-variable "eks_worker_iam_role_name" {
+variable "worker_iam_role_name" {
   description = "Name of the iam role associated with eks workers"
   type        = "string"
 }
 
-variable "eks_ingress_policy" {
+variable "ingress_policy_name" {
   description = "Name of the policy that allows ingress to interact with aws resources"
   type        = "string"
 }
@@ -88,38 +88,33 @@ variable "worker_name_prefix" {
   type        = "string"
 }
 
-variable "eks_node_userdata" {
-  description = "Customized script to launch on the woker nodes at first startup to join the cluster"
-  default     = ""
-}
-
-variable "worker_asg_desired_capacity" {
+variable "worker_autoscalinggroup_desired_capacity" {
   description = "Number of worker nodes at startup"
   default     = "2"
 }
 
-variable "worker_asg_max_size" {
+variable "worker_autoscalinggroup_max_size" {
   description = "Maximum number of worker nodes"
-  default     = "3"
+  default     = "5"
 }
 
-variable "worker_asg_min_size" {
+variable "worker_autoscalinggroup_min_size" {
   description = "Minimum number of worker nodes"
-  default     = "1"
+  default     = "2"
 }
 
-variable "worker_asg_name" {
+variable "worker_autoscalinggroup_name" {
   description = "Name of the autoscalinggroup for worker nodes"
   type        = "string"
 }
 
-variable "worker_asg_tags" {
+variable "worker_autoscalinggroup_tags" {
   description = "Maps of tags to dynamically add to autoscaling group"
   default     = []
 }
 
 variable "efs_name" {
-  description = "Name of the security group associated with efs"
+  description = "Name of the efs provided for persistent volumes"
   type        = "string"
 }
 
@@ -143,7 +138,12 @@ variable "worker_role_tags" {
   default     = {}
 }
 
-variable "eks_worker_iam_instance_profile" {
+variable "worker_iam_instance_profile" {
   description = "Name of the instance profile for worker nodes"
   type        = "string"
+}
+
+variable "alb_enabled" {
+  description = "Boolean that indicates if alb ingress controller should be deployed in the cluster"
+  default     = "false"
 }

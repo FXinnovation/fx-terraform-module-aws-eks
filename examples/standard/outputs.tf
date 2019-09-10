@@ -1,31 +1,31 @@
-output "master-sg-id" {
-  value = module.standard.master-sg-id
+output "master_sg_id" {
+  value = module.standard.master_sg_id
 }
 
-output "worker-sg-id" {
-  value = module.standard.worker-sg-id
+output "worker_sg_id" {
+  value = module.standard.worker_sg_id
 }
 
-output "master-role-id" {
-  value = module.standard.master-role-id
+output "master_role_id" {
+  value = module.standard.master_role_id
 }
 
-output "worker-role-id" {
-  value = module.standard.worker-role-id
+output "worker_role_id" {
+  value = module.standard.worker_role_id
 }
 
-output "cluster-name" {
-  value = module.standard.cluster-name
+output "cluster_name" {
+  value = module.standard.cluster_name
 }
 
-output "worker-asg-id" {
-  value = module.standard.worker-asg-id
+output "worker_asg_id" {
+  value = module.standard.worker_asg_id
 }
 
-output "eks-cluster-endpoint" {
-  value = module.standard.eks-cluster-endpoint
+output "eks_cluster_endpoint" {
+  value = module.standard.eks_cluster_endpoint
 }
 
-output "cluster-public-certificate" {
-  value = module.standard.cluster-public-certificate
+output "cluster_public_certificate" {
+  value = module.standard.cluster_public_certificate
 }
