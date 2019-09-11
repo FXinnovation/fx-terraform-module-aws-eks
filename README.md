@@ -22,6 +22,8 @@ Optionally it can deploy ALB ingress controller.
 | master\_role\_tags | Map of tags to apply to the IAM role for master | map | `{}` | no |
 | master\_security\_group\_name | Name of the eks master security group. | string | `"aws-sg-eks-master"` | no |
 | master\_security\_group\_tags | Map of tags to apply to the security group for eks master. | map | `{}` | no |
+| namespace | Name of the namespace who need to use efs | string | `"default"` | no |
+| region | Aws region for deploying the module | string | n/a | yes |
 | security\_group\_ids | Additional list of security group IDs for the eks cluster | list | `[]` | no |
 | tags | Map of tags to apply to all resources of the module \(where applicable\). | map | `{}` | no |
 | worker\_ami | Customized ami for eks worker nodes | string | `""` | no |

@@ -147,3 +147,13 @@ variable "alb_enabled" {
   description = "Boolean that indicates if alb ingress controller should be deployed in the cluster"
   default     = "false"
 }
+
+variable "namespace" {
+  description = "Name of the namespace who need to use efs"
+  default     = "default"
+}
+
+variable "region" {
+  description = "Aws region for deploying the module"
+  type        = "string"
+}

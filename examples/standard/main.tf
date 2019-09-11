@@ -1,31 +1,8 @@
-provider "aws" {
-  version    = "~> 2.27.0"
-  region     = "us-east-2"
-  access_key = "${var.access_key}"
-  secret_key = "${var.secret_key}"
-}
-
-provider "random" {
-  version = "~> 2.0"
-}
-
-provider "template" {
-  version = "~> 2.1.2"
-}
-
 resource "random_string" "this" {
   length  = 8
   special = false
   upper   = false
   number  = false
-}
-
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnet_ids" "default" {
-  vpc_id = data.aws_vpc.default.id
 }
 
 module "standard" {
@@ -47,4 +24,5 @@ module "standard" {
   worker_security_group_name   = "aws-sg-eks-nodes-${random_string.this.result}"
   worker_iam_instance_profile  = "terraform-eks-node-${random_string.this.result}"
   alb_enabled                  = "true"
+  region                       = data.aws_region.current.name
 }

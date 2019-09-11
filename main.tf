@@ -283,17 +283,191 @@ resource "aws_autoscaling_group" "this" {
 # Kubernetes configuration
 #####
 
-data "aws_eks_cluster_auth" "this" {
-  depends_on = ["aws_eks_cluster.this"]
-  name       = var.cluster_name
+resource "kubernetes_service_account" "efs" {
+  metadata {
+    name      = "efs-provisioner"
+    namespace = var.namespace
+  }
 }
 
-provider "kubernetes" {
-  host                   = aws_eks_cluster.this.endpoint
-  cluster_ca_certificate = base64decode(aws_eks_cluster.this.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.this.token
-  load_config_file       = false
-  version                = "~> 1.9"
+resource "kubernetes_cluster_role" "this" {
+  metadata {
+    name = "efs-provisioner-runner"
+  }
+
+  rule {
+    api_groups = [""]
+    resources  = ["persistentvolumes"]
+    verbs      = ["get", "list", "watch", "create", "delete"]
+  }
+  rule {
+    api_groups = [""]
+    resources  = ["persistentvolumeclaims"]
+    verbs      = ["get", "list", "watch", "update"]
+  }
+  rule {
+    api_groups = ["storage.k8s.io"]
+    resources  = ["storageclasses"]
+    verbs      = ["get", "list", "watch"]
+  }
+  rule {
+    api_groups = [""]
+    resources  = ["events"]
+    verbs      = ["create", "update", "patch"]
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "this" {
+  metadata {
+    name = "run-efs-provisioner"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "efs-provisioner-runner"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "efs-provisioner"
+    namespace = var.namespace
+  }
+}
+
+resource "kubernetes_role" "this" {
+  metadata {
+    name      = "leader-locking-efs-provisioner"
+    namespace = var.namespace
+  }
+
+  rule {
+    api_groups = [""]
+    resources  = ["endpoints"]
+    verbs      = ["get", "list", "watch", "create", "update", "patch"]
+  }
+}
+
+resource "kubernetes_role_binding" "this" {
+  metadata {
+    name      = "leader-locking-efs-provisioner"
+    namespace = var.namespace
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "Role"
+    name      = "leader-locking-efs-provisioner"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "efs-provisioner"
+    namespace = var.namespace
+  }
+}
+
+resource "kubernetes_config_map" "this" {
+  metadata {
+    name      = "efs-provisioner"
+    namespace = var.namespace
+  }
+
+  data = {
+    "file.system.id"   = aws_efs_file_system.this.id
+    "aws.region"       = var.region
+    "provisioner.name" = "example.com/aws-efs"
+    "dns.name"         = aws_efs_file_system.this.dns_name
+  }
+}
+
+resource "kubernetes_storage_class" "this" {
+  metadata {
+    name = "aws-efs"
+  }
+  storage_provisioner = "example.com/aws-efs"
+}
+
+resource "kubernetes_deployment" "efs" {
+  metadata {
+    name      = "efs-provisioner"
+    namespace = var.namespace
+  }
+
+  spec {
+    replicas = 2
+    strategy {
+      type = "Recreate"
+    }
+
+    selector {
+      match_labels = {
+        app = "efs-provisioner"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "efs-provisioner"
+        }
+      }
+
+      spec {
+        service_account_name            = "efs-provisioner"
+        automount_service_account_token = true
+        container {
+          image = "quay.io/external_storage/efs-provisioner:latest"
+          name  = "efs-provisioner"
+
+          env {
+            name = "FILE_SYSTEM_ID"
+            value_from {
+              config_map_key_ref {
+                name = "efs-provisioner"
+                key  = "file.system.id"
+              }
+            }
+          }
+          env {
+            name = "AWS_REGION"
+            value_from {
+              config_map_key_ref {
+                name = "efs-provisioner"
+                key  = "aws.region"
+              }
+            }
+          }
+          env {
+            name = "DNS_NAME"
+            value_from {
+              config_map_key_ref {
+                name = "efs-provisioner"
+                key  = "dns.name"
+              }
+            }
+          }
+          env {
+            name = "PROVISIONER_NAME"
+            value_from {
+              config_map_key_ref {
+                name = "efs-provisioner"
+                key  = "provisioner.name"
+              }
+            }
+          }
+
+          volume_mount {
+            mount_path = "/persistentvolumes"
+            name       = "pv-volume"
+          }
+        }
+        volume {
+          name = "pv-volume"
+          nfs {
+            path   = "/"
+            server = aws_efs_file_system.this.dns_name
+          }
+        }
+      }
+    }
+  }
 }
 
 resource "kubernetes_config_map" "aws_auth" {
