@@ -27,7 +27,7 @@ output "eks_cluster_endpoint" {
 }
 
 output "eks_cluster_token" {
-  value = module.standard.cluster_token
+  value     = module.standard.cluster_token
   sensitive = true
 }
 

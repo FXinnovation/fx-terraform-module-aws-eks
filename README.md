@@ -45,10 +45,11 @@ Optionally it can deploy ALB ingress controller.
 
 | Name | Description |
 |------|-------------|
+| cluster\_endpoint |  |
 | cluster\_name |  |
 | cluster\_public\_certificate |  |
+| cluster\_token |  |
 | efs\_id |  |
-| eks\_cluster\_endpoint |  |
 | master\_role\_id |  |
 | master\_sg\_id |  |
 | worker\_asg\_id |  |
