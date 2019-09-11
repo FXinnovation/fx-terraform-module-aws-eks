@@ -22,8 +22,13 @@ output "worker_asg_id" {
   value = aws_autoscaling_group.this.id
 }
 
-output "eks_cluster_endpoint" {
+output "cluster_endpoint" {
   value = aws_eks_cluster.this.endpoint
+}
+
+output "cluster_token" {
+  value = data.aws_eks_cluster_auth.this.token
+  sensitive = true
 }
 
 output "cluster_public_certificate" {

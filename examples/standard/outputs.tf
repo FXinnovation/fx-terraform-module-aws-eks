@@ -23,7 +23,12 @@ output "worker_asg_id" {
 }
 
 output "eks_cluster_endpoint" {
-  value = module.standard.eks_cluster_endpoint
+  value = module.standard.cluster_endpoint
+}
+
+output "eks_cluster_token" {
+  value = module.standard.cluster_token
+  sensitive = true
 }
 
 output "cluster_public_certificate" {
