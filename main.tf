@@ -1,21 +1,3 @@
-resource "aws_efs_file_system" "this" {
-  encrypted = true
-
-  tags = merge(
-    {
-      "Terraform" = "true"
-    },
-    var.tags,
-    var.efs_file_system_tags
-  )
-}
-
-resource "aws_efs_mount_target" "this" {
-  count          = length(var.aws_subnet_ids)
-  file_system_id = aws_efs_file_system.this.id
-  subnet_id      = tolist(var.aws_subnet_ids)[count.index]
-}
-
 #####
 # Security groups for eks master
 #####
@@ -24,27 +6,6 @@ resource "aws_security_group" "this_master" {
   name        = var.master_security_group_name
   description = "Master from/to worker node groups"
   vpc_id      = var.aws_vpc
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [var.aws_vpc_cidr_block]
-  }
-
-  egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [var.aws_vpc_cidr_block]
-  }
-
-  egress {
-    from_port   = 1025
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = [var.aws_vpc_cidr_block]
-  }
 
   tags = merge(
     {
@@ -55,44 +16,37 @@ resource "aws_security_group" "this_master" {
   )
 }
 
+resource "aws_security_group_rule" "from_worker_443" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = [var.aws_vpc_cidr_block]
+  security_group_id = aws_security_group.this_master.id
+}
+
+resource "aws_security_group_rule" "to_worker_443" {
+  type              = "egress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = [var.aws_vpc_cidr_block]
+  security_group_id = aws_security_group.this_master.id
+}
+
+resource "aws_security_group_rule" "to_worker_other" {
+  type              = "egress"
+  from_port         = 1025
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = [var.aws_vpc_cidr_block]
+  security_group_id = aws_security_group.this_master.id
+}
+
 resource "aws_security_group" "this_worker" {
   name        = var.worker_security_group_name
   description = "Worker node groups from/to master"
   vpc_id      = var.aws_vpc
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port       = 1025
-    to_port         = 65535
-    protocol        = "tcp"
-    security_groups = [aws_security_group.this_master.id]
-  }
-
-  ingress {
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.this_master.id]
-  }
-
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   tags = merge(
     {
@@ -101,6 +55,42 @@ resource "aws_security_group" "this_worker" {
     var.tags,
     var.worker_security_group_tags
   )
+}
+
+resource "aws_security_group_rule" "from_master_other" {
+  type                     = "ingress"
+  from_port                = 1025
+  to_port                  = 65535
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.this_master.id
+  security_group_id        = aws_security_group.this_worker.id
+}
+
+resource "aws_security_group_rule" "from_master_443" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.this_master.id
+  security_group_id        = aws_security_group.this_worker.id
+}
+
+resource "aws_security_group_rule" "self" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  self              = true
+  security_group_id = aws_security_group.this_worker.id
+}
+
+resource "aws_security_group_rule" "to_master" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.this_worker.id
 }
 
 #####
@@ -254,16 +244,16 @@ resource "aws_launch_configuration" "this" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  desired_capacity     = var.worker_autoscalinggroup_desired_capacity
+  desired_capacity     = var.worker_autoscaling_group_desired_capacity
   launch_configuration = aws_launch_configuration.this.id
-  max_size             = var.worker_autoscalinggroup_max_size
-  min_size             = var.worker_autoscalinggroup_min_size
-  name                 = var.worker_autoscalinggroup_name
+  max_size             = var.worker_autoscaling_group_max_size
+  min_size             = var.worker_autoscaling_group_min_size
+  name                 = var.worker_autoscaling_group_name
   vpc_zone_identifier  = flatten(var.aws_subnet_ids)
 
   tag {
     key                 = "Name"
-    value               = "terraform-tf-eks"
+    value               = "terraform-eks"
     propagate_at_launch = true
   }
 
@@ -274,11 +264,11 @@ resource "aws_autoscaling_group" "this" {
   }
 
   dynamic "tag" {
-    for_each = var.worker_autoscalinggroup_tags
+    for_each = var.worker_autoscaling_group_tags
     content {
       key                 = tag.value.key
       value               = tag.value.value
-      propagate_at_launch = tag.value.propagate
+      propagate_at_launch = tag.value.propagate_at_launch
     }
   }
 }
@@ -374,10 +364,10 @@ resource "kubernetes_config_map" "this" {
   }
 
   data = {
-    "file.system.id"   = aws_efs_file_system.this.id
+    "file.system.id"   = var.efs_id
     "aws.region"       = var.region
     "provisioner.name" = "example.com/aws-efs"
-    "dns.name"         = aws_efs_file_system.this.dns_name
+    "dns.name"         = var.efs_dns_name
   }
 }
 
@@ -466,7 +456,7 @@ resource "kubernetes_deployment" "efs" {
           name = "pv-volume"
           nfs {
             path   = "/"
-            server = aws_efs_file_system.this.dns_name
+            server = var.efs_dns_name
           }
         }
       }
@@ -583,7 +573,7 @@ resource "kubernetes_deployment" "this" {
       spec {
         container {
           args              = ["--ingress-class=alb", "--cluster-name=${var.cluster_name}", "--aws-region=us-east-2"]
-          image             = "894847497797.dkr.ecr.us-west-2.amazonaws.com/aws-alb-ingress-controller:v1.0.0"
+          image             = "894847497797.dkr.ecr.us-west-2.amazonaws.com/aws-alb-ingress-controller:${var.alb_image_version}"
           name              = "server"
           image_pull_policy = "Always"
 

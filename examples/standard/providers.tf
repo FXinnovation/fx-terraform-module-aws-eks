@@ -8,7 +8,7 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.standard.cluster_endpoint
   cluster_ca_certificate = base64decode(module.standard.cluster_public_certificate)
-  token                  = module.standard.cluster_token
+  token                  = data.aws_eks_cluster_auth.this.token
   load_config_file       = false
   version                = "~> 1.9"
 }

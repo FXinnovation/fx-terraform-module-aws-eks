@@ -8,23 +8,13 @@ variable "master_security_group_name" {
   default     = "aws-sg-eks-master"
 }
 
-variable "worker_security_group_name" {
-  description = "Name of the eks nodes security group."
-  default     = "aws-sg-eks-nodes"
+variable "master_role_tags" {
+  description = "Map of tags to apply to the IAM role for master"
+  default     = {}
 }
 
 variable "master_security_group_tags" {
   description = "Map of tags to apply to the security group for eks master."
-  default     = {}
-}
-
-variable "worker_security_group_tags" {
-  description = "Map of tags to apply to the security group for eks workers."
-  default     = {}
-}
-
-variable "tags" {
-  description = "Map of tags to apply to all resources of the module (where applicable)."
   default     = {}
 }
 
@@ -33,9 +23,79 @@ variable "master_iam_role_name" {
   type        = "string"
 }
 
+variable "worker_security_group_name" {
+  description = "Name of the eks nodes security group."
+  default     = "aws-sg-eks-nodes"
+}
+
+variable "worker_security_group_tags" {
+  description = "Map of tags to apply to the security group for eks workers."
+  default     = {}
+}
+
 variable "worker_iam_role_name" {
   description = "Name of the iam role associated with eks workers"
   type        = "string"
+}
+
+variable "worker_node_public_address" {
+  description = "Boolean that indicates if eks worker nodes should have a public ip or not"
+  default     = false
+}
+
+variable "worker_ami" {
+  description = "Customized ami for eks worker nodes"
+  default     = ""
+}
+
+variable "worker_instance_type" {
+  description = "Type of ec2 instance to use for worker nodes"
+  type        = "string"
+}
+
+variable "worker_name_prefix" {
+  description = "Prefix that wiil be used in the ec2 instance name for worker nodes"
+  type        = "string"
+}
+
+variable "worker_autoscaling_group_desired_capacity" {
+  description = "Number of worker nodes at startup"
+  default     = "2"
+}
+
+variable "worker_autoscaling_group_max_size" {
+  description = "Maximum number of worker nodes"
+  default     = "5"
+}
+
+variable "worker_autoscaling_group_min_size" {
+  description = "Minimum number of worker nodes"
+  default     = "2"
+}
+
+variable "worker_autoscaling_group_name" {
+  description = "Name of the autoscalinggroup for worker nodes"
+  type        = "string"
+}
+
+variable "worker_autoscaling_group_tags" {
+  description = "Maps of tags to dynamically add to autoscaling group"
+  default     = []
+}
+
+variable "worker_role_tags" {
+  description = "Map of tags to apply to the IAM role for workers"
+  default     = {}
+}
+
+variable "worker_iam_instance_profile" {
+  description = "Name of the instance profile for worker nodes"
+  type        = "string"
+}
+
+variable "tags" {
+  description = "Map of tags to apply to all resources of the module (where applicable)."
+  default     = {}
 }
 
 variable "ingress_policy_name" {
@@ -68,81 +128,6 @@ variable "eks_ami" {
   default     = "amazon-eks-node-1.13*"
 }
 
-variable "worker_node_public_address" {
-  description = "Boolean that indicates if eks worker nodes should have a public ip or not"
-  default     = false
-}
-
-variable "worker_ami" {
-  description = "Customized ami for eks worker nodes"
-  default     = ""
-}
-
-variable "worker_instance_type" {
-  description = "Type of ec2 instance to use for worker nodes"
-  type        = "string"
-}
-
-variable "worker_name_prefix" {
-  description = "Prefix that wiil be used in the ec2 instance name for worker nodes"
-  type        = "string"
-}
-
-variable "worker_autoscalinggroup_desired_capacity" {
-  description = "Number of worker nodes at startup"
-  default     = "2"
-}
-
-variable "worker_autoscalinggroup_max_size" {
-  description = "Maximum number of worker nodes"
-  default     = "5"
-}
-
-variable "worker_autoscalinggroup_min_size" {
-  description = "Minimum number of worker nodes"
-  default     = "2"
-}
-
-variable "worker_autoscalinggroup_name" {
-  description = "Name of the autoscalinggroup for worker nodes"
-  type        = "string"
-}
-
-variable "worker_autoscalinggroup_tags" {
-  description = "Maps of tags to dynamically add to autoscaling group"
-  default     = []
-}
-
-variable "efs_name" {
-  description = "Name of the efs provided for persistent volumes"
-  type        = "string"
-}
-
-variable "efs_security_group_name" {
-  description = "Name of the security group associated with efs"
-  type        = "string"
-}
-
-variable "efs_file_system_tags" {
-  description = "Map of tags to apply to the efs file system"
-  default     = {}
-}
-
-variable "master_role_tags" {
-  description = "Map of tags to apply to the IAM role for master"
-  default     = {}
-}
-
-variable "worker_role_tags" {
-  description = "Map of tags to apply to the IAM role for workers"
-  default     = {}
-}
-
-variable "worker_iam_instance_profile" {
-  description = "Name of the instance profile for worker nodes"
-  type        = "string"
-}
-
 variable "alb_enabled" {
   description = "Boolean that indicates if alb ingress controller should be deployed in the cluster"
   default     = "false"
@@ -155,5 +140,20 @@ variable "namespace" {
 
 variable "region" {
   description = "Aws region for deploying the module"
+  type        = "string"
+}
+
+variable "alb_image_version" {
+  description = "Version of the docker image used to deploy alb ingress controller"
+  type        = "string"
+}
+
+variable "efs_id" {
+  description = "ID of the efs to create persistent volumes"
+  type        = "string"
+}
+
+variable "efs_dns_name" {
+  description = "DNS name of the efs to create persistent volumes"
   type        = "string"
 }
