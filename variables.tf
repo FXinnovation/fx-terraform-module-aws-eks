@@ -25,7 +25,7 @@ variable "master_iam_role_name" {
 
 variable "master_private_access" {
   description = "Boolean that indicates if the apiserver should have a private access"
-  default     = true
+  default     = false
 }
 
 variable "master_public_access" {

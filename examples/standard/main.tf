@@ -23,7 +23,7 @@ module "standard" {
   worker_iam_instance_profile   = "terraform-eks-node-${random_string.this.result}"
   alb_enabled                   = "true"
   region                        = data.aws_region.current.name
-  alb_image_version             = "v1.0.0"
+  alb_image_version             = "v1.1.3"
   efs_id                        = "fs-41426038"
   efs_dns_name                  = "fs-41426038.efs.us-east-2.amazonaws.com"
 }
