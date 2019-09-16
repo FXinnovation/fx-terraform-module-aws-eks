@@ -23,6 +23,16 @@ variable "master_iam_role_name" {
   type        = "string"
 }
 
+variable "master_private_access" {
+  description = "Boolean that indicates if the apiserver should have a private access"
+  default = true
+}
+
+variable "master_public_access" {
+  description = "Boolean that indicates if the apiserver should have a public access"
+  default = true
+}
+
 variable "worker_security_group_name" {
   description = "Name of the eks nodes security group."
   default     = "aws-sg-eks-nodes"

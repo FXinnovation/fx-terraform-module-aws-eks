@@ -203,6 +203,8 @@ resource "aws_eks_cluster" "this" {
   vpc_config {
     security_group_ids = concat([aws_security_group.this_master.id], var.security_group_ids)
     subnet_ids         = flatten(var.aws_subnet_ids)
+    endpoint_private_access = var.master_private_access
+    endpoint_public_access = var.master_public_access
   }
 }
 
@@ -572,8 +574,8 @@ resource "kubernetes_deployment" "this" {
 
       spec {
         container {
-          args              = ["--ingress-class=alb", "--cluster-name=${var.cluster_name}", "--aws-region=us-east-2"]
-          image             = "894847497797.dkr.ecr.us-west-2.amazonaws.com/aws-alb-ingress-controller:${var.alb_image_version}"
+          args              = ["--ingress-class=alb", "--cluster-name=${var.cluster_name}", "--aws-region=${var.region}"]
+          image             = "docker.io/amazon/aws-alb-ingress-controller:${var.alb_image_version}"
           name              = "server"
           image_pull_policy = "Always"
 
