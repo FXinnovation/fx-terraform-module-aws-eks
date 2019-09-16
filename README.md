@@ -19,6 +19,8 @@ Optionally it can deploy ALB ingress controller.
 | eks\_ami | Name of the ami to use for eks worker nodes | string | `"amazon-eks-node-1.13*"` | no |
 | ingress\_policy\_name | Name of the policy that allows ingress to interact with aws resources | string | n/a | yes |
 | master\_iam\_role\_name | Name of the iam role associated with eks master | string | n/a | yes |
+| master\_private\_access | Boolean that indicates if the apiserver should have a private access | string | `"true"` | no |
+| master\_public\_access | Boolean that indicates if the apiserver should have a public access | string | `"true"` | no |
 | master\_role\_tags | Map of tags to apply to the IAM role for master | map | `{}` | no |
 | master\_security\_group\_name | Name of the eks master security group. | string | `"aws-sg-eks-master"` | no |
 | master\_security\_group\_tags | Map of tags to apply to the security group for eks master. | map | `{}` | no |
