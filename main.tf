@@ -5,11 +5,12 @@
 resource "aws_security_group" "this_master" {
   name        = var.master_security_group_name
   description = "Master from/to worker node groups"
-  vpc_id      = var.aws_vpc
+  vpc_id      = var.vpc_id
 
   tags = merge(
     {
       "Terraform" = "true"
+      "Name"      = "tooling-master-sg"
     },
     var.tags,
     var.master_security_group_tags
@@ -17,40 +18,41 @@ resource "aws_security_group" "this_master" {
 }
 
 resource "aws_security_group_rule" "from_worker_443" {
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = [var.aws_vpc_cidr_block]
-  security_group_id = aws_security_group.this_master.id
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.this_worker.id
+  security_group_id        = aws_security_group.this_master.id
 }
 
 resource "aws_security_group_rule" "to_worker_443" {
-  type              = "egress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = [var.aws_vpc_cidr_block]
-  security_group_id = aws_security_group.this_master.id
+  type                     = "egress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.this_worker.id
+  security_group_id        = aws_security_group.this_master.id
 }
 
 resource "aws_security_group_rule" "to_worker_other" {
-  type              = "egress"
-  from_port         = 1025
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = [var.aws_vpc_cidr_block]
-  security_group_id = aws_security_group.this_master.id
+  type                     = "egress"
+  from_port                = 1025
+  to_port                  = 65535
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.this_worker.id
+  security_group_id        = aws_security_group.this_master.id
 }
 
 resource "aws_security_group" "this_worker" {
   name        = var.worker_security_group_name
   description = "Worker node groups from/to master"
-  vpc_id      = var.aws_vpc
+  vpc_id      = var.vpc_id
 
   tags = merge(
     {
       "Terraform" = "true"
+      "Name"      = "tooling-worker-sg"
     },
     var.tags,
     var.worker_security_group_tags
@@ -117,6 +119,7 @@ POLICY
   tags = merge(
     {
       "Terraform" = "true"
+      "Name"      = "tooling-master-role"
     },
     var.tags,
     var.master_role_tags
@@ -153,6 +156,7 @@ POLICY
   tags = merge(
     {
       "Terraform" = "true"
+      "Name"      = "tooling-worker-role"
     },
     var.tags,
     var.worker_role_tags
@@ -197,25 +201,21 @@ resource "aws_iam_instance_profile" "node" {
 #####
 
 resource "aws_eks_cluster" "this" {
-  name     = var.cluster_name
+  name     = var.name
   role_arn = aws_iam_role.master.arn
 
   vpc_config {
     security_group_ids      = concat([aws_security_group.this_master.id], var.security_group_ids)
-    subnet_ids              = flatten(var.aws_subnet_ids)
+    subnet_ids              = var.aws_subnet_ids
     endpoint_private_access = var.master_private_access
     endpoint_public_access  = var.master_public_access
   }
 }
 
-data "aws_eks_cluster_auth" "this" {
-  name = var.cluster_name
-}
-
 data "aws_ami" "this" {
   filter {
     name   = "name"
-    values = [var.eks_ami]
+    values = [var.ami_name]
   }
 
   most_recent = true
@@ -225,7 +225,7 @@ data "aws_ami" "this" {
 data "template_file" "this" {
   template = file("${path.module}/templates/userdata.tpl")
   vars = {
-    cluster_name        = var.cluster_name
+    cluster_name        = var.name
     cluster_endpoint    = aws_eks_cluster.this.endpoint
     cluster_certificate = aws_eks_cluster.this.certificate_authority.0.data
   }
@@ -251,7 +251,7 @@ resource "aws_autoscaling_group" "this" {
   max_size             = var.worker_autoscaling_group_max_size
   min_size             = var.worker_autoscaling_group_min_size
   name                 = var.worker_autoscaling_group_name
-  vpc_zone_identifier  = flatten(var.aws_subnet_ids)
+  vpc_zone_identifier  = var.aws_subnet_ids
 
   tag {
     key                 = "Name"
@@ -260,7 +260,7 @@ resource "aws_autoscaling_group" "this" {
   }
 
   tag {
-    key                 = "kubernetes.io/cluster/${var.cluster_name}"
+    key                 = "kubernetes.io/cluster/${var.name}"
     value               = "owned"
     propagate_at_launch = true
   }
@@ -574,7 +574,7 @@ resource "kubernetes_deployment" "this" {
 
       spec {
         container {
-          args              = ["--ingress-class=alb", "--cluster-name=${var.cluster_name}", "--aws-region=${var.region}"]
+          args              = ["--ingress-class=alb", "--cluster-name=${var.name}", "--aws-region=${var.region}"]
           image             = "docker.io/amazon/aws-alb-ingress-controller:${var.alb_image_version}"
           name              = "server"
           image_pull_policy = "Always"

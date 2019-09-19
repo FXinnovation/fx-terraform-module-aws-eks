@@ -1,4 +1,4 @@
-variable "cluster_name" {
+variable "name" {
   description = "Name of the EKS cluster"
   type        = "string"
 }
@@ -25,7 +25,7 @@ variable "master_iam_role_name" {
 
 variable "master_private_access" {
   description = "Boolean that indicates if the apiserver should have a private access"
-  default     = false
+  default     = true
 }
 
 variable "master_public_access" {
@@ -113,7 +113,7 @@ variable "ingress_policy_name" {
   type        = "string"
 }
 
-variable "aws_vpc" {
+variable "vpc_id" {
   description = "Name of the vpc where the eks cluster is created"
   type        = "string"
 }
@@ -133,7 +133,7 @@ variable "security_group_ids" {
   default     = []
 }
 
-variable "eks_ami" {
+variable "ami_name" {
   description = "Name of the ami to use for eks worker nodes"
   default     = "amazon-eks-node-1.13*"
 }
