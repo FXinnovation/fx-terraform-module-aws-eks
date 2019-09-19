@@ -26,7 +26,7 @@ Optionally it can deploy ALB ingress controller.
 | namespace | Name of the namespace who need to use efs | string | `"default"` | no |
 | region | Aws region for deploying the module | string | n/a | yes |
 | security\_group\_ids | Additional list of security group IDs for the eks cluster | list | `[]` | no |
-| tags | Map of tags to apply to all resources of the module \(where applicable\). | map | `{}` | no |
+| tags | Map of tags to apply to all resources of the module (where applicable). | map | `{}` | no |
 | vpc\_id | Name of the vpc where the eks cluster is created | string | n/a | yes |
 | worker\_ami | Customized ami for eks worker nodes | string | `""` | no |
 | worker\_autoscaling\_group\_desired\_capacity | Number of worker nodes at startup | string | `"2"` | no |
