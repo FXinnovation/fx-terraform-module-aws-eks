@@ -10,7 +10,6 @@ resource "aws_security_group" "this_master" {
   tags = merge(
     {
       "Terraform" = "true"
-      "Name"      = "tooling-master-sg"
     },
     var.tags,
     var.master_security_group_tags
@@ -52,7 +51,6 @@ resource "aws_security_group" "this_worker" {
   tags = merge(
     {
       "Terraform" = "true"
-      "Name"      = "tooling-worker-sg"
     },
     var.tags,
     var.worker_security_group_tags
@@ -119,7 +117,6 @@ POLICY
   tags = merge(
     {
       "Terraform" = "true"
-      "Name"      = "tooling-master-role"
     },
     var.tags,
     var.master_role_tags
@@ -156,7 +153,6 @@ POLICY
   tags = merge(
     {
       "Terraform" = "true"
-      "Name"      = "tooling-worker-role"
     },
     var.tags,
     var.worker_role_tags
@@ -206,7 +202,7 @@ resource "aws_eks_cluster" "this" {
 
   vpc_config {
     security_group_ids      = concat([aws_security_group.this_master.id], var.security_group_ids)
-    subnet_ids              = var.aws_subnet_ids
+    subnet_ids              = var.subnet_ids
     endpoint_private_access = var.master_private_access
     endpoint_public_access  = var.master_public_access
   }
@@ -228,6 +224,7 @@ data "template_file" "this" {
     cluster_name        = var.name
     cluster_endpoint    = aws_eks_cluster.this.endpoint
     cluster_certificate = aws_eks_cluster.this.certificate_authority.0.data
+    use_max_pods = var.worker_use_max_pods
   }
 }
 
@@ -251,7 +248,7 @@ resource "aws_autoscaling_group" "this" {
   max_size             = var.worker_autoscaling_group_max_size
   min_size             = var.worker_autoscaling_group_min_size
   name                 = var.worker_autoscaling_group_name
-  vpc_zone_identifier  = var.aws_subnet_ids
+  vpc_zone_identifier  = var.subnet_ids
 
   tag {
     key                 = "Name"

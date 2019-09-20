@@ -103,6 +103,11 @@ variable "worker_iam_instance_profile" {
   type        = "string"
 }
 
+variable "worker_use_max_pods" {
+  description = "Boolean that indicates if a limit of authorized pods is set or not"
+  default = true
+}
+
 variable "tags" {
   description = "Map of tags to apply to all resources of the module (where applicable)."
   default     = {}
@@ -118,12 +123,12 @@ variable "vpc_id" {
   type        = "string"
 }
 
-variable "aws_subnet_ids" {
+variable "subnet_ids" {
   description = "IDs of the subnet where EKS should be available"
   default     = []
 }
 
-variable "aws_vpc_cidr_block" {
+variable "vpc_cidr_block" {
   description = "cidr block of the vpc where the eks cluster is created"
   type        = "string"
 }
