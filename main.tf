@@ -224,7 +224,7 @@ data "template_file" "this" {
     cluster_name        = var.name
     cluster_endpoint    = aws_eks_cluster.this.endpoint
     cluster_certificate = aws_eks_cluster.this.certificate_authority.0.data
-    use_max_pods = var.worker_use_max_pods
+    use_max_pods        = var.worker_use_max_pods
   }
 }
 

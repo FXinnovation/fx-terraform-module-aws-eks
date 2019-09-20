@@ -105,7 +105,7 @@ variable "worker_iam_instance_profile" {
 
 variable "worker_use_max_pods" {
   description = "Boolean that indicates if a limit of authorized pods is set or not"
-  default = true
+  default     = true
 }
 
 variable "tags" {
