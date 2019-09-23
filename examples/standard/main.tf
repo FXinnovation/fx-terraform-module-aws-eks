@@ -10,7 +10,6 @@ module "standard" {
 
   name                       = "terraform-jenkins-${random_string.this.result}"
   vpc_id                     = data.aws_vpc.default.id
-  vpc_cidr_block             = data.aws_vpc.default.cidr_block
   master_iam_role_name       = "terraform-eks-cluster-${random_string.this.result}"
   master_security_group_name = "aws-sg-eks-master-${random_string.this.result}"
   master_security_group_tags = {

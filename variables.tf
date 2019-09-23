@@ -128,11 +128,6 @@ variable "subnet_ids" {
   default     = []
 }
 
-variable "vpc_cidr_block" {
-  description = "cidr block of the vpc where the eks cluster is created"
-  type        = "string"
-}
-
 variable "security_group_ids" {
   description = "Additional list of security group IDs for the eks cluster"
   default     = []
