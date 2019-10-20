@@ -113,11 +113,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "vpc_id" {
-  description = "Name of the vpc where the eks cluster is created"
-  type        = "string"
-}
-
 variable "subnet_ids" {
   description = "IDs of the subnet where EKS should be available"
   default     = []

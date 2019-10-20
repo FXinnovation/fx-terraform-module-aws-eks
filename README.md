@@ -19,7 +19,6 @@ Optionally it can deploy ALB ingress controller.
 | security\_group\_ids | Additional list of security group IDs for the eks cluster | list | `[]` | no |
 | subnet\_ids | IDs of the subnet where EKS should be available | list | `[]` | no |
 | tags | Map of tags to apply to all resources of the module (where applicable). | map | `{}` | no |
-| vpc\_id | Name of the vpc where the eks cluster is created | string | n/a | yes |
 | worker\_ami | Customized ami for eks worker nodes | string | `""` | no |
 | worker\_autoscaling\_group\_desired\_capacity | Number of worker nodes at startup | string | `"2"` | no |
 | worker\_autoscaling\_group\_max\_size | Maximum number of worker nodes | string | `"5"` | no |

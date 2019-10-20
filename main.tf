@@ -1,16 +1,33 @@
 #####
+# Datasource
+#####
+
+data "aws_subnet" "this" {
+  id = var.subnet_ids[0]
+}
+
+#####
+# Locals
+#####
+
+locals {
+  tags = {
+    "Terraform" = "true"
+  }
+  vpc_id = data.aws_subnet.this.vpc_id
+}
+
+#####
 # Security groups for eks master
 #####
 
 resource "aws_security_group" "this_master" {
   name        = var.master_security_group_name
   description = "Master from/to worker node groups"
-  vpc_id      = var.vpc_id
+  vpc_id      = local.vpc_id
 
   tags = merge(
-    {
-      "Terraform" = "true"
-    },
+    local.tags,
     var.tags,
     var.master_security_group_tags
   )
@@ -46,12 +63,10 @@ resource "aws_security_group_rule" "to_worker_other" {
 resource "aws_security_group" "this_worker" {
   name        = var.worker_security_group_name
   description = "Worker node groups from/to master"
-  vpc_id      = var.vpc_id
+  vpc_id      = local.vpc_id
 
   tags = merge(
-    {
-      "Terraform" = "true"
-    },
+    local.tags,
     var.tags,
     var.worker_security_group_tags
   )
@@ -115,9 +130,7 @@ resource "aws_iam_role" "master" {
 }
 POLICY
   tags = merge(
-    {
-      "Terraform" = "true"
-    },
+    local.tags,
     var.tags,
     var.master_role_tags
   )
@@ -151,20 +164,10 @@ resource "aws_iam_role" "worker" {
 }
 POLICY
   tags = merge(
-    {
-      "Terraform" = "true"
-    },
+    local.tags,
     var.tags,
     var.worker_role_tags
   )
-}
-
-resource "aws_iam_policy" "this" {
-  name        = var.ingress_policy_name
-  path        = "/"
-  description = "Allow ingress controllers to interact with elasticloadbalancing"
-
-  policy = file("${path.module}/templates/alb-ingress-controller-policy.json")
 }
 
 resource "aws_iam_role_policy_attachment" "worker_node_policy" {
@@ -179,11 +182,6 @@ resource "aws_iam_role_policy_attachment" "worker_cni_policy" {
 
 resource "aws_iam_role_policy_attachment" "worker_container_registry" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.worker.name
-}
-
-resource "aws_iam_role_policy_attachment" "alb_ingress_controller" {
-  policy_arn = aws_iam_policy.this.arn
   role       = aws_iam_role.worker.name
 }
 
