@@ -113,11 +113,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "ingress_policy_name" {
-  description = "Name of the policy that allows ingress to interact with aws resources"
-  type        = "string"
-}
-
 variable "vpc_id" {
   description = "Name of the vpc where the eks cluster is created"
   type        = "string"
@@ -136,34 +131,4 @@ variable "security_group_ids" {
 variable "ami_name" {
   description = "Name of the ami to use for eks worker nodes"
   default     = "amazon-eks-node-1.13*"
-}
-
-variable "alb_enabled" {
-  description = "Boolean that indicates if alb ingress controller should be deployed in the cluster"
-  default     = "false"
-}
-
-variable "namespace" {
-  description = "Name of the namespace who need to use efs"
-  default     = "default"
-}
-
-variable "region" {
-  description = "Aws region for deploying the module"
-  type        = "string"
-}
-
-variable "alb_image_version" {
-  description = "Version of the docker image used to deploy alb ingress controller"
-  type        = "string"
-}
-
-variable "efs_id" {
-  description = "ID of the efs to create persistent volumes"
-  type        = "string"
-}
-
-variable "efs_dns_name" {
-  description = "DNS name of the efs to create persistent volumes"
-  type        = "string"
 }
