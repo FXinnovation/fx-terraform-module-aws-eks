@@ -9,7 +9,6 @@ module "standard" {
   source = "../../"
 
   name                       = "terraform-jenkins-${random_string.this.result}"
-  vpc_id                     = data.aws_vpc.default.id
   master_iam_role_name       = "terraform-eks-cluster-${random_string.this.result}"
   master_security_group_name = "aws-sg-eks-master-${random_string.this.result}"
   master_security_group_tags = {
@@ -31,12 +30,7 @@ module "standard" {
   worker_role_tags = {
     "Name" = "tooling-worker-role"
   }
-  ingress_policy_name   = "alb-ingress-controller-${random_string.this.result}"
   subnet_ids            = data.aws_subnet_ids.default.ids
-  alb_enabled           = "true"
-  alb_image_version     = "v1.1.3"
   region                = data.aws_region.current.name
-  efs_id                = "fs-41426038"
-  efs_dns_name          = "fs-41426038.efs.us-east-2.amazonaws.com"
   master_private_access = true
 }
