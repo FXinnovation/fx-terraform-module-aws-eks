@@ -31,6 +31,5 @@ module "standard" {
     "Name" = "tooling-worker-role"
   }
   subnet_ids            = data.aws_subnet_ids.default.ids
-  region                = data.aws_region.current.name
   master_private_access = true
 }
