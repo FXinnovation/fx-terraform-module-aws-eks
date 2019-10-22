@@ -216,16 +216,6 @@ data "aws_ami" "this" {
   owners      = ["602401143452"] # Amazon EKS AMI Account ID
 }
 
-data "template_file" "this" {
-  template = file("${path.module}/templates/userdata.tpl")
-  vars = {
-    cluster_name        = var.name
-    cluster_endpoint    = aws_eks_cluster.this.endpoint
-    cluster_certificate = aws_eks_cluster.this.certificate_authority.0.data
-    use_max_pods        = var.worker_use_max_pods
-  }
-}
-
 resource "aws_launch_configuration" "this" {
   associate_public_ip_address = var.worker_node_public_address
   iam_instance_profile        = aws_iam_instance_profile.node.name
@@ -233,7 +223,17 @@ resource "aws_launch_configuration" "this" {
   instance_type               = var.worker_instance_type
   name_prefix                 = var.worker_name_prefix
   security_groups             = concat([aws_security_group.this_worker.id], var.security_group_ids)
-  user_data_base64            = base64encode(data.template_file.this.rendered)
+  user_data_base64 = base64encode(
+    templatefile(
+      "${path.module}/templates/userdata.tpl",
+      {
+        cluster_name        = var.name,
+        cluster_endpoint    = aws_eks_cluster.this.endpoint,
+        cluster_certificate = aws_eks_cluster.this.certificate_authority.0.data,
+        use_max_pods        = var.worker_use_max_pods
+      }
+    )
+  )
 
   lifecycle {
     create_before_destroy = true
