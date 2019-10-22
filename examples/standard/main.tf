@@ -30,6 +30,6 @@ module "standard" {
   worker_role_tags = {
     "Name" = "tooling-worker-role"
   }
-  subnet_ids            = data.aws_subnet_ids.default.ids
+  subnet_ids            = tolist(data.aws_subnet_ids.default.ids)
   master_private_access = true
 }
