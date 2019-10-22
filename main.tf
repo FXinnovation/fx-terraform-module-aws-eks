@@ -112,40 +112,6 @@ resource "aws_security_group_rule" "to_master" {
 # IAM roles
 #####
 
-resource "aws_iam_role" "master" {
-  name = var.master_iam_role_name
-
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-  tags = merge(
-    local.tags,
-    var.tags,
-    var.master_role_tags
-  )
-}
-
-resource "aws_iam_role_policy_attachment" "master_cluster_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.master.name
-}
-
-resource "aws_iam_role_policy_attachment" "master_service_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.master.name
-}
-
 resource "aws_iam_role" "worker" {
   name = var.worker_iam_role_name
 
@@ -193,18 +159,6 @@ resource "aws_iam_instance_profile" "node" {
 #####
 # Master and workers creation
 #####
-
-resource "aws_eks_cluster" "this" {
-  name     = var.name
-  role_arn = aws_iam_role.master.arn
-
-  vpc_config {
-    security_group_ids      = concat([aws_security_group.this_master.id], var.security_group_ids)
-    subnet_ids              = var.subnet_ids
-    endpoint_private_access = var.master_private_access
-    endpoint_public_access  = var.master_public_access
-  }
-}
 
 data "aws_ami" "this" {
   filter {
