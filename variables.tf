@@ -1,6 +1,7 @@
 variable "allowed_security_group_ids" {
   description = "List of security group ID's that will be allowed to talk to the EKS cluster."
   type        = list(string)
+  default     = []
 }
 
 variable "eks_tags" {

@@ -8,7 +8,7 @@ Optionally it can deploy ALB ingress controller.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| allowed\_security\_group\_ids | List of security group ID's that will be allowed to talk to the EKS cluster. | list(string) | n/a | yes |
+| allowed\_security\_group\_ids | List of security group ID's that will be allowed to talk to the EKS cluster. | list(string) | `[]` | no |
 | eks\_tags | Map of tags that will be applied on the EKS cluster. | map | `{}` | no |
 | enabled | Whether or not to enable this module. | string | `"true"` | no |
 | iam\_role\_name | Name of the IAM role for the EKS cluster. | string | `"eks-cluster"` | no |
