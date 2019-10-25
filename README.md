@@ -14,8 +14,8 @@ Optionally it can deploy ALB ingress controller.
 | iam\_role\_name | Name of the IAM role for the EKS cluster. | string | `"eks-cluster"` | no |
 | iam\_role\_tags | Map of tags that will be applied on the IAM role. | map | `{}` | no |
 | name | Name of the EKS cluster. | string | `"eks-cluster"` | no |
-| private\_access | Whether or not to enable private access to the EKS enpoint. | string | `"true"` | no |
-| public\_access | Whether or not to enable public access to the EKS enpoint. | string | `"true"` | no |
+| private\_access | Whether or not to enable private access to the EKS endpoint. | string | `"true"` | no |
+| public\_access | Whether or not to enable public access to the EKS endpoint. | string | `"true"` | no |
 | security\_group\_ids | List of additionnal security group ID's to set on the AKS cluster. | list | `[]` | no |
 | security\_group\_name | Name of the security group for the EKS cluster. | string | `"eks-cluster"` | no |
 | security\_group\_tags | Map of tags that will be applied on the security group. | map | `{}` | no |
@@ -34,7 +34,7 @@ Optionally it can deploy ALB ingress controller.
 | iam\_role\_name | Name of the IAM role that is created. |
 | iam\_role\_unique\_id | Uniauq ID of the IAM role that is created. |
 | id | ID of the EKS cluster that is created. |
-| name | Nane of the EKS cluster that is created. |
+| name | Name of the EKS cluster that is created. |
 | security\_group\_arn | ARN of the security group that is created. |
 | security\_group\_id | ID of the security group that is created. |
 | security\_group\_name | Name of the security group that is created. |

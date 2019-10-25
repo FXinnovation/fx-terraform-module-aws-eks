@@ -1,5 +1,5 @@
 output "name" {
-  description = "Nane of the EKS cluster that is created."
+  description = "Name of the EKS cluster that is created."
   value       = element(concat(aws_eks_cluster.this.*.name, list("")), 0)
 }
 

@@ -1,12 +1,4 @@
 #####
-# Datasources
-#####
-
-data "aws_subnet" "this" {
-  id = var.subnet_ids[0]
-}
-
-#####
 # Locals
 #####
 
@@ -49,20 +41,7 @@ resource "aws_iam_role" "this" {
   count = var.enabled ? 1 : 0
 
   name               = var.iam_role_name
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
+  assume_role_policy = data.aws_iam_policy_document.this.json
 
 }
 

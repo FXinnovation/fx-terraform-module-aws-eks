@@ -30,12 +30,12 @@ variable "name" {
 }
 
 variable "private_access" {
-  description = "Whether or not to enable private access to the EKS enpoint."
+  description = "Whether or not to enable private access to the EKS endpoint."
   default     = true
 }
 
 variable "public_access" {
-  description = "Whether or not to enable public access to the EKS enpoint."
+  description = "Whether or not to enable public access to the EKS endpoint."
   default     = true
 }
 
