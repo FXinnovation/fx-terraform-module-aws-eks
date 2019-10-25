@@ -64,11 +64,6 @@ resource "aws_iam_role" "this" {
 }
 POLICY
 
-  tags = merge(
-    local.tags,
-    var.tags,
-    var.iam_role_tags
-  )
 }
 
 resource "aws_iam_role_policy_attachment" "master_cluster_policy" {
