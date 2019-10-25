@@ -22,4 +22,21 @@ Optionally it can deploy ALB ingress controller.
 | subnet\_ids | List of subnet ID's where the EKS master will be available from. | list(string) | n/a | yes |
 | tags | Map of tags that will be applied on all resources. | map | `{}` | no |
 
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| arn | ARN of the EKS cluster that is created. |
+| certificate\_authority | Base 64 encoded certificate authority of the EKS cluster that is created. |
+| endpoint | Endpoint of the EKS cluster that is created. |
+| iam\_role\_arn | ARN of the IAM role that is created. |
+| iam\_role\_id | ID of the IAM role that is created. |
+| iam\_role\_name | Name of the IAM role that is created. |
+| iam\_role\_unique\_id | Uniauq ID of the IAM role that is created. |
+| id | ID of the EKS cluster that is created. |
+| name | Nane of the EKS cluster that is created. |
+| security\_group\_arn | ARN of the security group that is created. |
+| security\_group\_id | ID of the security group that is created. |
+| security\_group\_name | Name of the security group that is created. |
+
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
