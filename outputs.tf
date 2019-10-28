@@ -15,7 +15,7 @@ output "arn" {
 
 output "certificate_authority" {
   description = "Base 64 encoded certificate authority of the EKS cluster that is created."
-  value       = element(concat(aws_eks_cluster.this.*.certificate_authority, list("")), 0)
+  value       = element(concat(aws_eks_cluster.this.*.certificate_authority.0.data, list("")), 0)
   sensitive   = true
 }
 
