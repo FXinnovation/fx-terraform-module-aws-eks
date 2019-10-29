@@ -79,23 +79,23 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_security_group_rule" "this_ingress_443" {
-  for_each = toset(var.allowed_security_group_ids)
+  count = var.enabled ? length(var.allowed_security_group_ids) : 0
 
   type                     = "ingress"
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  source_security_group_id = each.key
+  source_security_group_id = var.allowed_security_group_ids[count.index]
   security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
 }
 
 resource "aws_security_group_rule" "allowed_egress_443" {
-  for_each = toset(var.allowed_security_group_ids)
+  count = var.enabled ? length(var.allowed_security_group_ids) : 0
 
   type                     = "egress"
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
   source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
-  security_group_id        = each.key
+  security_group_id        = var.allowed_security_group_ids[count.index]
 }
