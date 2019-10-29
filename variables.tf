@@ -63,3 +63,9 @@ variable "tags" {
   description = "Map of tags that will be applied on all resources."
   default     = {}
 }
+
+variable "kubernetes_version" {
+  description = "Version that will be used for the EKS cluster."
+  default     = null
+  type        = string
+}

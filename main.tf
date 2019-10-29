@@ -18,6 +18,7 @@ resource "aws_eks_cluster" "this" {
 
   name     = var.name
   role_arn = element(concat(aws_iam_role.this.*.arn, list("")), 0)
+  version  = var.kubernetes_version
 
   vpc_config {
     security_group_ids      = concat(aws_security_group.this.*.id, var.security_group_ids)

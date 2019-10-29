@@ -59,3 +59,8 @@ output "security_group_arn" {
   description = "ARN of the security group that is created."
   value       = element(concat(aws_security_group.this.*.arn, list("")), 0)
 }
+
+output "kubernetes_version" {
+  description = "Version of the EKS cluster."
+  value       = element(concat(aws_eks_cluster.this.*.version, list("")), 0)
+}

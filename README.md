@@ -13,6 +13,7 @@ Optionally it can deploy ALB ingress controller.
 | enabled | Whether or not to enable this module. | string | `"true"` | no |
 | iam\_role\_name | Name of the IAM role for the EKS cluster. | string | `"eks-cluster"` | no |
 | iam\_role\_tags | Map of tags that will be applied on the IAM role. | map | `{}` | no |
+| kubernetes\_version | Version that will be used for the EKS cluster. | string | `"null"` | no |
 | name | Name of the EKS cluster. | string | `"eks-cluster"` | no |
 | private\_access | Whether or not to enable private access to the EKS endpoint. | string | `"true"` | no |
 | public\_access | Whether or not to enable public access to the EKS endpoint. | string | `"true"` | no |
@@ -34,6 +35,7 @@ Optionally it can deploy ALB ingress controller.
 | iam\_role\_name | Name of the IAM role that is created. |
 | iam\_role\_unique\_id | Uniauq ID of the IAM role that is created. |
 | id | ID of the EKS cluster that is created. |
+| kubernetes\_version | Version of the EKS cluster. |
 | name | Name of the EKS cluster that is created. |
 | security\_group\_arn | ARN of the security group that is created. |
 | security\_group\_id | ID of the security group that is created. |
