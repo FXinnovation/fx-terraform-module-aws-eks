@@ -15,7 +15,7 @@ Optionally it can deploy ALB ingress controller.
 | iam\_role\_tags | Map of tags that will be applied on the IAM role. | map | `{}` | no |
 | kubernetes\_version | Version that will be used for the EKS cluster. | string | `"null"` | no |
 | name | Name of the EKS cluster. | string | `"eks-cluster"` | no |
-| private\_access | Whether or not to enable private access to the EKS endpoint. | string | `"true"` | no |
+| private\_access | Whether or not to enable private access to the EKS endpoint. | string | `"false"` | no |
 | public\_access | Whether or not to enable public access to the EKS endpoint. | string | `"true"` | no |
 | security\_group\_ids | List of additionnal security group ID's to set on the AKS cluster. | list | `[]` | no |
 | security\_group\_name | Name of the security group for the EKS cluster. | string | `"eks-cluster"` | no |
