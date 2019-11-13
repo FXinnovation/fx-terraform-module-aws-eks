@@ -4,6 +4,11 @@ variable "allowed_security_group_ids" {
   default     = []
 }
 
+variable "aws_auth_configmap_data" {
+  description = "List of maps that represent the aws-auth data needed for EKS to work properly. https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html for more information."
+  default     = []
+}
+
 variable "eks_tags" {
   description = "Map of tags that will be applied on the EKS cluster."
   default     = {}

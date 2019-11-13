@@ -7,3 +7,20 @@ data "aws_subnet_ids" "default" {
 }
 
 data "aws_region" "current" {}
+
+data "aws_eks_cluster_auth" "this" {
+  name = module.standard.name
+}
+
+locals {
+  aws_auth_data = [
+    {
+      rolearn  = "fakearnbecauseitdoesntmatter"
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups = [
+        "system:bootstrappers",
+        "system:nodes"
+      ]
+    }
+  ]
+}

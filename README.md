@@ -9,6 +9,7 @@ Optionally it can deploy ALB ingress controller.
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | allowed\_security\_group\_ids | List of security group ID's that will be allowed to talk to the EKS cluster. | list(string) | `[]` | no |
+| aws\_auth\_configmap\_data | List of maps that represent the aws-auth data needed for EKS to work properly. https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html for more information. | list | `[]` | no |
 | eks\_tags | Map of tags that will be applied on the EKS cluster. | map | `{}` | no |
 | enabled | Whether or not to enable this module. | string | `"true"` | no |
 | iam\_role\_name | Name of the IAM role for the EKS cluster. | string | `"eks-cluster"` | no |

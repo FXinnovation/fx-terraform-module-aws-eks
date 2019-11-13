@@ -1,4 +1,10 @@
 #####
+# Providers
+#####
+
+provider "kubernetes" {}
+
+#####
 # Locals
 #####
 
@@ -32,6 +38,10 @@ resource "aws_eks_cluster" "this" {
     var.tags,
     var.eks_tags
   )
+
+  provisioner "local-exec" {
+    command = "sleep 30"
+  }
 }
 
 #####
@@ -98,4 +108,16 @@ resource "aws_security_group_rule" "allowed_egress_443" {
   protocol                 = "tcp"
   source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
   security_group_id        = var.allowed_security_group_ids[count.index]
+}
+
+resource "kubernetes_config_map" "this" {
+  count = var.enabled ? 1 : 0
+
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+  data = {
+    "mapRoles" = yamlencode(var.aws_auth_configmap_data)
+  }
 }
