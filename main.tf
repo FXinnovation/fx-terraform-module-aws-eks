@@ -121,17 +121,6 @@ resource "aws_security_group_rule" "allowed_egress_443" {
   security_group_id = var.allowed_security_group_ids[count.index]
 }
 
-resource "aws_security_group_rule" "allowed_egress_443_cidrs" {
-  count = var.enabled ? length(var.allowed_security_group_ids) : 0
-
-  type              = "egress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = var.allowed_cidrs
-  security_group_id = var.allowed_security_group_ids[count.index]
-}
-
 resource "kubernetes_config_map" "this" {
   count = var.enabled ? 1 : 0
 
