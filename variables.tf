@@ -4,6 +4,12 @@ variable "allowed_security_group_ids" {
   default     = []
 }
 
+variable "allowed_cidrs" {
+  description = "List of CIDRs that will be allowed to talk to the EKS cluster."
+  type        = list(string)
+  default     = []
+}
+
 variable "aws_auth_configmap_data" {
   description = "List of maps that represent the aws-auth data needed for EKS to work properly. https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html for more information."
   default     = []
