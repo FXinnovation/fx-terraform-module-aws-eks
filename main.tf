@@ -1,10 +1,4 @@
 #####
-# Providers
-#####
-
-provider "kubernetes" {}
-
-#####
 # Locals
 #####
 
