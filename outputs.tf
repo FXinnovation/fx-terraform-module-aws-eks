@@ -64,3 +64,8 @@ output "kubernetes_version" {
   description = "Version of the EKS cluster."
   value       = element(concat(aws_eks_cluster.this.*.version, list("")), 0)
 }
+
+output "kubernates_config_map_name" {
+  description = "Config map for EKS workers"
+  value       = element(concat(kubernetes_config_map.this.*.metadata.0.name, list("")), 0)
+}

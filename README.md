@@ -44,6 +44,7 @@ Optionally it can deploy ALB ingress controller.
 | iam\_role\_name | Name of the IAM role that is created. |
 | iam\_role\_unique\_id | Uniauq ID of the IAM role that is created. |
 | id | ID of the EKS cluster that is created. |
+| kubernates\_config\_map\_name | Config map for EKS workers |
 | kubernetes\_version | Version of the EKS cluster. |
 | name | Name of the EKS cluster that is created. |
 | security\_group\_arn | ARN of the security group that is created. |

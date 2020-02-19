@@ -36,6 +36,14 @@ resource "aws_eks_cluster" "this" {
   provisioner "local-exec" {
     command = "sleep 30"
   }
+
+  depends_on = [
+    aws_security_group_rule.this_ingress_443,
+    aws_security_group_rule.this_ingress_443_cidrs,
+    aws_security_group_rule.allowed_egress_443,
+    aws_iam_role_policy_attachment.master_cluster_policy,
+    aws_iam_role_policy_attachment.master_service_policy
+  ]
 }
 
 #####
