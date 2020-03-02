@@ -115,6 +115,17 @@ resource "aws_security_group_rule" "this_ingress_443_cidrs" {
 resource "aws_security_group_rule" "allowed_egress_443" {
   count = var.enabled ? length(var.allowed_security_group_ids) : 0
 
+  type                     = "egress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+  security_group_id        = var.allowed_security_group_ids[count.index]
+}
+
+resource "aws_security_group_rule" "allowed_egress_443_cidrs" {
+  count = var.enabled ? length(var.allowed_cidrs) : 0
+
   type              = "egress"
   from_port         = 443
   to_port           = 443

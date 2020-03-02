@@ -1,3 +1,9 @@
+1.4.1 / 2020-02-19
+==================
+
+  * fix: Allowed security group was accidently deleted
+  * feat: Add more tests to avoid security groups issues
+
 1.4.0 / 2020-02-19
 ==================
 
