@@ -4,6 +4,11 @@ variable "allowed_security_group_ids" {
   default     = []
 }
 
+variable "allowed_security_group_count" {
+  description = "exact length of the `allowed_security_group_ids` variable."
+  type        = number
+}
+
 variable "allowed_cidrs" {
   description = "List of CIDRs that will be allowed to talk to the EKS cluster."
   type        = list(string)

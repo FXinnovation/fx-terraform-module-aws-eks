@@ -91,7 +91,7 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_security_group_rule" "this_ingress_443" {
-  count = var.enabled ? length(var.allowed_security_group_ids) : 0
+  count = var.enabled ? var.allowed_security_group_count : 0
 
   type                     = "ingress"
   from_port                = 443
@@ -113,7 +113,7 @@ resource "aws_security_group_rule" "this_ingress_443_cidrs" {
 }
 
 resource "aws_security_group_rule" "allowed_egress_443" {
-  count = var.enabled ? length(var.allowed_security_group_ids) : 0
+  count = var.enabled ? var.allowed_security_group_count : 0
 
   type                     = "egress"
   from_port                = 443

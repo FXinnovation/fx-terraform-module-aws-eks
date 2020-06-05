@@ -1,3 +1,8 @@
+2.0.0
+=====
+
+  * fix: (BREAKING) Add a "count" variable allowed security group id's
+
 1.4.1 / 2020-02-19
 ==================
 

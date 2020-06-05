@@ -4,6 +4,13 @@ Terraform module to deploy EKS cluster on AWS.
 Optionally it can deploy ALB ingress controller.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12 |
+| aws | ~> 2.31 |
+
 ## Providers
 
 | Name | Version |
@@ -14,15 +21,16 @@ Optionally it can deploy ALB ingress controller.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
+|------|-------------|------|---------|:--------:|
 | allowed\_cidrs | List of CIDRs that will be allowed to talk to the EKS cluster. | `list(string)` | `[]` | no |
+| allowed\_security\_group\_count | exact length of the `allowed_security_group_ids` variable. | `number` | n/a | yes |
 | allowed\_security\_group\_ids | List of security group ID's that will be allowed to talk to the EKS cluster. | `list(string)` | `[]` | no |
 | aws\_auth\_configmap\_data | List of maps that represent the aws-auth data needed for EKS to work properly. https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html for more information. | `list` | `[]` | no |
 | eks\_tags | Map of tags that will be applied on the EKS cluster. | `map` | `{}` | no |
 | enabled | Whether or not to enable this module. | `bool` | `true` | no |
 | iam\_role\_name | Name of the IAM role for the EKS cluster. | `string` | `"eks-cluster"` | no |
 | iam\_role\_tags | Map of tags that will be applied on the IAM role. | `map` | `{}` | no |
-| kubernetes\_version | Version that will be used for the EKS cluster. | `string` | n/a | yes |
+| kubernetes\_version | Version that will be used for the EKS cluster. | `string` | `null` | no |
 | name | Name of the EKS cluster. | `string` | `"eks-cluster"` | no |
 | private\_access | Whether or not to enable private access to the EKS endpoint. | `bool` | `false` | no |
 | public\_access | Whether or not to enable public access to the EKS endpoint. | `bool` | `true` | no |
