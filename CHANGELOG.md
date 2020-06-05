@@ -2,6 +2,7 @@
 =====
 
   * fix: (BREAKING) Add a "count" variable allowed security group id's
+  * chore: update pre-commit configuration
 
 1.4.1 / 2020-02-19
 ==================
