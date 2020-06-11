@@ -58,6 +58,13 @@ resource "aws_iam_role" "this" {
 
 }
 
+resource "aws_iam_policy" "this" {
+  count = var.enabled ? 1 : 0
+
+  name   = var.iam_policy_name
+  policy = data.aws_iam_policy_document.allow_ec2_describe.json
+}
+
 resource "aws_iam_role_policy_attachment" "master_cluster_policy" {
   count = var.enabled ? 1 : 0
 
@@ -69,6 +76,13 @@ resource "aws_iam_role_policy_attachment" "master_service_policy" {
   count = var.enabled ? 1 : 0
 
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  role       = element(concat(aws_iam_role.this.*.name, list("")), 0)
+}
+
+resource "aws_iam_role_policy_attachment" "master_missing_policy_from_aws" {
+  count = var.enabled ? 1 : 0
+
+  policy_arn = element(concat(aws_iam_policy.this.*.arn, list("")), 0)
   role       = element(concat(aws_iam_role.this.*.name, list("")), 0)
 }
 

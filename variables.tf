@@ -35,6 +35,11 @@ variable "iam_role_name" {
   default     = "eks-cluster"
 }
 
+variable "iam_policy_name" {
+  description = "Name of the additionnal IAM policy for the EKS cluster."
+  default     = "eks-cluster"
+}
+
 variable "iam_role_tags" {
   description = "Map of tags that will be applied on the IAM role."
   default     = {}

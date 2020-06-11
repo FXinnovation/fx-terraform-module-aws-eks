@@ -28,6 +28,7 @@ Optionally it can deploy ALB ingress controller.
 | aws\_auth\_configmap\_data | List of maps that represent the aws-auth data needed for EKS to work properly. https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html for more information. | `list` | `[]` | no |
 | eks\_tags | Map of tags that will be applied on the EKS cluster. | `map` | `{}` | no |
 | enabled | Whether or not to enable this module. | `bool` | `true` | no |
+| iam\_policy\_name | Name of the additionnal IAM policy for the EKS cluster. | `string` | `"eks-cluster"` | no |
 | iam\_role\_name | Name of the IAM role for the EKS cluster. | `string` | `"eks-cluster"` | no |
 | iam\_role\_tags | Map of tags that will be applied on the IAM role. | `map` | `{}` | no |
 | kubernetes\_version | Version that will be used for the EKS cluster. | `string` | `null` | no |

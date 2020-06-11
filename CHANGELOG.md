@@ -1,3 +1,8 @@
+2.1.0
+=====
+
+  * feat: Add policy to EKS role
+
 2.0.0
 =====
 

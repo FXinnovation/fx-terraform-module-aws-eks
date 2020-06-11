@@ -22,3 +22,16 @@ data "aws_iam_policy_document" "this" {
     ]
   }
 }
+
+data "aws_iam_policy_document" "allow_ec2_describe" {
+  statement {
+    sid = "1"
+
+    actions = [
+      "ec2:DescribeAccountAttributes",
+      "ec2:DescribeInternetGateways"
+    ]
+
+    resources = ["*"]
+  }
+}
