@@ -1,3 +1,8 @@
+2.2.0
+=====
+
+  * feat: Add resources to allow for kubernetes and aws iam integration
+
 2.1.0
 =====
 

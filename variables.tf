@@ -90,3 +90,8 @@ variable "kubernetes_version" {
   default     = null
   type        = string
 }
+
+variable "kubernetes_aws_iam_integration_enabled" {
+  description = "Whether or not to enable the IAM Integration in kubernetes (this will allow you to map AWS IAM roles to specific Kubernetes service acounts)"
+  default     = true
+}

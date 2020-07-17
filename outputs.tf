@@ -69,3 +69,11 @@ output "kubernates_config_map_name" {
   description = "Config map for EKS workers"
   value       = element(concat(kubernetes_config_map.this.*.metadata.0.name, list("")), 0)
 }
+
+output "iam_openid_connect_provider_arn" {
+  value = element(concat(aws_iam_openid_connect_provider.this.*.arn, list("")), 0)
+}
+
+output "iam_openid_connect_provider_url" {
+  value = element(concat(aws_iam_openid_connect_provider.this.*.url, list("")), 0)
+}

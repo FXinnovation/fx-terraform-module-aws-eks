@@ -159,3 +159,19 @@ resource "kubernetes_config_map" "this" {
     "mapRoles" = yamlencode(var.aws_auth_configmap_data)
   }
 }
+
+#####
+# k8s IAM integration
+#####
+
+resource "aws_iam_openid_connect_provider" "this" {
+  count = var.enabled && var.kubernetes_aws_iam_integration_enabled ? 1 : 0
+
+  url = element(concat(aws_eks_cluster.this.*.identity.0.oidc.0.issuer, list("")), 0)
+
+  client_id_list = [
+    "sts.amazonaws.com",
+  ]
+
+  thumbprint_list = []
+}

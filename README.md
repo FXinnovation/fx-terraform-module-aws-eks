@@ -31,6 +31,7 @@ Optionally it can deploy ALB ingress controller.
 | iam\_policy\_name | Name of the additionnal IAM policy for the EKS cluster. | `string` | `"eks-cluster"` | no |
 | iam\_role\_name | Name of the IAM role for the EKS cluster. | `string` | `"eks-cluster"` | no |
 | iam\_role\_tags | Map of tags that will be applied on the IAM role. | `map` | `{}` | no |
+| kubernetes\_aws\_iam\_integration\_enabled | Whether or not to enable the IAM Integration in kubernetes (this will allow you to map AWS IAM roles to specific Kubernetes service acounts) | `bool` | `true` | no |
 | kubernetes\_version | Version that will be used for the EKS cluster. | `string` | `null` | no |
 | name | Name of the EKS cluster. | `string` | `"eks-cluster"` | no |
 | private\_access | Whether or not to enable private access to the EKS endpoint. | `bool` | `false` | no |
@@ -48,6 +49,8 @@ Optionally it can deploy ALB ingress controller.
 | arn | ARN of the EKS cluster that is created. |
 | certificate\_authority | Base 64 encoded certificate authority of the EKS cluster that is created. |
 | endpoint | Endpoint of the EKS cluster that is created. |
+| iam\_openid\_connect\_provider\_arn | n/a |
+| iam\_openid\_connect\_provider\_url | n/a |
 | iam\_role\_arn | ARN of the IAM role that is created. |
 | iam\_role\_id | ID of the IAM role that is created. |
 | iam\_role\_name | Name of the IAM role that is created. |
