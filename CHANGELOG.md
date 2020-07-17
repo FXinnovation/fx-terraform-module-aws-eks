@@ -1,6 +1,7 @@
 2.2.0
 =====
 
+  * chore: Update example outputs to show all outputs
   * feat: Add resources to allow for kubernetes and aws iam integration
 
 2.1.0
