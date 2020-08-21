@@ -3,5 +3,6 @@ terraform {
 
   required_providers {
     aws = "~> 2.31"
+    tls = "~> 2.0"
   }
 }

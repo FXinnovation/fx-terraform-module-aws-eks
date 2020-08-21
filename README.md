@@ -10,6 +10,7 @@ Optionally it can deploy ALB ingress controller.
 |------|---------|
 | terraform | >= 0.12 |
 | aws | ~> 2.31 |
+| tls | ~> 2.0 |
 
 ## Providers
 
@@ -17,6 +18,7 @@ Optionally it can deploy ALB ingress controller.
 |------|---------|
 | aws | ~> 2.31 |
 | kubernetes | n/a |
+| tls | ~> 2.0 |
 
 ## Inputs
 

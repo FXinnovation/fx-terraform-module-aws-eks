@@ -1,3 +1,8 @@
+2.2.1
+=====
+
+  * fix: Add calculation of certificate thumbprint
+
 2.2.0
 =====
 
