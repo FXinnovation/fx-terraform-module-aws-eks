@@ -1,3 +1,8 @@
+x.x.x (unreleased)
+==================
+
+  * chore: bump pre-commit hooks to fix jenkins test
+
 2.2.1
 =====
 
