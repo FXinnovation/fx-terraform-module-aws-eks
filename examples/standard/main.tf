@@ -19,8 +19,10 @@ module "standard" {
   }
 
   iam_role_name                = random_string.this.result
+  iam_policy_name              = random_string.this.result
   name                         = random_string.this.result
   security_group_name          = random_string.this.result
+  worker_security_group_name   = "worker-${random_string.this.result}"
   subnet_ids                   = tolist(data.aws_subnet_ids.default.ids)
   aws_auth_configmap_data      = local.aws_auth_data
   allowed_cidrs                = ["127.0.0.1/32"]

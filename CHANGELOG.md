@@ -1,6 +1,8 @@
-x.x.x (unreleased)
-==================
+2.3.0
+=====
 
+  * feat: Add security group to attach to workers
+  * chore: update pre-commit configuration
   * chore: bump pre-commit hooks to fix jenkins test
 
 2.2.1

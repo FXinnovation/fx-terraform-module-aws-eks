@@ -90,6 +90,8 @@ resource "aws_iam_role_policy_attachment" "master_missing_policy_from_aws" {
 # Security group
 #####
 
+# Master SG
+
 resource "aws_security_group" "this" {
   count = var.enabled ? 1 : 0
 
@@ -112,6 +114,17 @@ resource "aws_security_group_rule" "this_ingress_443" {
   to_port                  = 443
   protocol                 = "tcp"
   source_security_group_id = var.allowed_security_group_ids[count.index]
+  security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
+}
+
+resource "aws_security_group_rule" "worker_ingress_443" {
+  count = var.enabled ? 1 : 0
+
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
   security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
 }
 
@@ -147,6 +160,48 @@ resource "aws_security_group_rule" "allowed_egress_443_cidrs" {
   cidr_blocks       = var.allowed_cidrs
   security_group_id = var.allowed_security_group_ids[count.index]
 }
+
+# Worker SG
+
+resource "aws_security_group" "worker" {
+  count = var.enabled ? 1 : 0
+
+  name        = var.worker_security_group_name
+  description = "Worker Pool EKS security group."
+  vpc_id      = local.vpc_id
+
+  tags = merge(
+    local.tags,
+    var.tags,
+    var.worker_security_group_tags
+  )
+}
+
+resource "aws_security_group_rule" "this_ingress_self_any" {
+  count = var.enabled ? 1 : 0
+
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  self              = true
+  security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+}
+
+resource "aws_security_group_rule" "this_egress_any" {
+  count = var.enabled ? 1 : 0
+
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+}
+
+#####
+# k8s auth
+#####
 
 resource "kubernetes_config_map" "this" {
   count = var.enabled ? 1 : 0

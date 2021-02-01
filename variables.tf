@@ -75,6 +75,16 @@ variable "security_group_tags" {
   default     = {}
 }
 
+variable "worker_security_group_name" {
+  description = "Name of the security group for the EKS cluster."
+  default     = "eks-workers-cluster"
+}
+
+variable "worker_security_group_tags" {
+  description = "Map of tags that will be applied on the security group."
+  default     = {}
+}
+
 variable "subnet_ids" {
   description = "List of subnet ID's where the EKS master will be available from."
   type        = list(string)

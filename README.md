@@ -43,6 +43,8 @@ Optionally it can deploy ALB ingress controller.
 | security\_group\_tags | Map of tags that will be applied on the security group. | `map` | `{}` | no |
 | subnet\_ids | List of subnet ID's where the EKS master will be available from. | `list(string)` | n/a | yes |
 | tags | Map of tags that will be applied on all resources. | `map` | `{}` | no |
+| worker\_security\_group\_name | Name of the security group for the EKS cluster. | `string` | `"eks-workers-cluster"` | no |
+| worker\_security\_group\_tags | Map of tags that will be applied on the security group. | `map` | `{}` | no |
 
 ## Outputs
 
@@ -64,5 +66,7 @@ Optionally it can deploy ALB ingress controller.
 | security\_group\_arn | ARN of the security group that is created. |
 | security\_group\_id | ID of the security group that is created. |
 | security\_group\_name | Name of the security group that is created. |
+| worker\_security\_group\_arn | ARN of the security group that is created for the workers. |
+| worker\_security\_group\_id | ID of the security group that is created for the workers |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
