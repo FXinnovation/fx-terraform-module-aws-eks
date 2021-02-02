@@ -1,3 +1,8 @@
+2.3.1
+=====
+
+  * chore: Fix outputs in standard example for TF 0.14
+
 2.3.0
 =====
 
