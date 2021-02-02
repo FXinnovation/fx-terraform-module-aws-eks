@@ -15,7 +15,7 @@ module "standard" {
   source = "../../"
 
   providers = {
-    kubernetes = "kubernetes"
+    kubernetes = kubernetes
   }
 
   iam_role_name                = random_string.this.result
