@@ -3,6 +3,7 @@
 
   * fix: version constraint for aws provider (allow 3.x releases)
   * chore: pin pre-commit stuff (maintenance branch)
+  * chore: pin terraform to latest 0.13 (maintenance branch)
 
 1.5.0 / 2020-02-19
 ==================
