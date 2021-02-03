@@ -1,4 +1,4 @@
-1.4.1 / 2020-02-19
+1.5.0 / 2020-02-19
 ==================
 
   * fix: Allowed security group was accidently deleted
