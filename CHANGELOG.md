@@ -1,3 +1,8 @@
+2.3.3
+=====
+
+  * fix: SG rules for worker
+
 2.3.2
 =====
 

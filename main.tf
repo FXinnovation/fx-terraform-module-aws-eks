@@ -185,7 +185,7 @@ resource "aws_security_group_rule" "this_ingress_self_any" {
   to_port           = 0
   protocol          = "-1"
   self              = true
-  security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+  security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
 }
 
 resource "aws_security_group_rule" "this_egress_any" {
@@ -196,7 +196,7 @@ resource "aws_security_group_rule" "this_egress_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+  security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
 }
 
 #####
