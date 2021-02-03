@@ -9,13 +9,13 @@ Optionally it can deploy ALB ingress controller.
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12 |
-| aws | ~> 2.31 |
+| aws | >= 2.31, < 4 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2.31 |
+| aws | >= 2.31, < 4 |
 | kubernetes | n/a |
 
 ## Inputs

@@ -1,6 +1,7 @@
 1.5.1 / 2021-02-03
 ==================
 
+  * fix: version constraint for aws provider (allow 3.x releases)
   * chore: pin pre-commit stuff (maintenance branch)
 
 1.5.0 / 2020-02-19
