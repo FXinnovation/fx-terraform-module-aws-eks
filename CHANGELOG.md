@@ -2,6 +2,9 @@
 =====
 
   * fix: default value (0) for `allowed_security_group_count` (as we did for `allowed_security_group_ids`)
+  * fix: version constraint for aws provider (allow 3.x releases)
+  * fix: version constraint for tls provider (allow 3.x releases)
+  * chore: bump providers version for example/standard
 
 2.3.1
 =====
