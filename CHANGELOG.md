@@ -1,6 +1,7 @@
 2.3.3
 =====
 
+  * fix: rename security group rules for worker (this... -> worker...)
   * fix: SG rules for worker
 
 2.3.2

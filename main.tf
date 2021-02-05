@@ -117,7 +117,7 @@ resource "aws_security_group_rule" "this_ingress_443" {
   security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
 }
 
-resource "aws_security_group_rule" "worker_ingress_443" {
+resource "aws_security_group_rule" "this_ingress_443_worker" {
   count = var.enabled ? 1 : 0
 
   type                     = "ingress"
@@ -177,7 +177,7 @@ resource "aws_security_group" "worker" {
   )
 }
 
-resource "aws_security_group_rule" "this_ingress_self_any" {
+resource "aws_security_group_rule" "worker_ingress_self_any" {
   count = var.enabled ? 1 : 0
 
   type              = "ingress"
@@ -188,7 +188,7 @@ resource "aws_security_group_rule" "this_ingress_self_any" {
   security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
 }
 
-resource "aws_security_group_rule" "this_egress_any" {
+resource "aws_security_group_rule" "worker_egress_any" {
   count = var.enabled ? 1 : 0
 
   type              = "egress"
