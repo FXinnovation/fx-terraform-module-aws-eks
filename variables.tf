@@ -7,6 +7,7 @@ variable "allowed_security_group_ids" {
 variable "allowed_security_group_count" {
   description = "exact length of the `allowed_security_group_ids` variable."
   type        = number
+  default     = 0
 }
 
 variable "allowed_cidrs" {

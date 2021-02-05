@@ -1,3 +1,8 @@
+2.3.2
+=====
+
+  * fix: default value (0) for `allowed_security_group_count` (as we did for `allowed_security_group_ids`)
+
 2.3.1
 =====
 
