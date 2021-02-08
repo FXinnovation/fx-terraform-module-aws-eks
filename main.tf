@@ -131,7 +131,7 @@ resource "aws_security_group_rule" "this_ingress_443_worker" {
 }
 
 resource "aws_security_group_rule" "this_ingress_443_cidrs" {
-  count             = var.enabled ? 1 : 0
+  count             = (var.enabled && length(var.allowed_cidrs) > 0) ? 1 : 0
   type              = "ingress"
   from_port         = 443
   to_port           = 443
@@ -188,7 +188,7 @@ resource "aws_security_group_rule" "this_allowed_egress_worker_highports" {
 }
 
 resource "aws_security_group_rule" "this_allowed_egress_cidrs_443" {
-  count             = var.enabled ? 1 : 0
+  count             = (var.enabled && length(var.allowed_cidrs) > 0) ? 1 : 0
   type              = "egress"
   from_port         = 443
   to_port           = 443
@@ -199,7 +199,7 @@ resource "aws_security_group_rule" "this_allowed_egress_cidrs_443" {
 }
 
 resource "aws_security_group_rule" "this_allowed_egress_cidrs_highports" {
-  count             = var.enabled ? 1 : 0
+  count             = (var.enabled && length(var.allowed_cidrs) > 0) ? 1 : 0
   type              = "egress"
   from_port         = 1025
   to_port           = 65535
