@@ -1,6 +1,8 @@
 2.3.3
 =====
 
+  * fix: count for `this_ingress_443_cidrs` & `this_allowed_egress_443_cidrs`
+  * fix: rename security group outbound rules for controlplane (`allowed...` -> `this_allowed...`)
   * fix: rename security group rules for worker (this... -> worker...)
   * fix: SG rules for worker
 

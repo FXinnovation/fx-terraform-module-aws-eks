@@ -40,7 +40,7 @@ resource "aws_eks_cluster" "this" {
   depends_on = [
     aws_security_group_rule.this_ingress_443,
     aws_security_group_rule.this_ingress_443_cidrs,
-    aws_security_group_rule.allowed_egress_443,
+    aws_security_group_rule.this_allowed_egress_443,
     aws_iam_role_policy_attachment.master_cluster_policy,
     aws_iam_role_policy_attachment.master_service_policy
   ]
@@ -129,8 +129,7 @@ resource "aws_security_group_rule" "this_ingress_443_worker" {
 }
 
 resource "aws_security_group_rule" "this_ingress_443_cidrs" {
-  count = var.enabled ? length(var.allowed_cidrs) : 0
-
+  count             = var.enabled ? 1 : 0
   type              = "ingress"
   from_port         = 443
   to_port           = 443
@@ -139,7 +138,7 @@ resource "aws_security_group_rule" "this_ingress_443_cidrs" {
   security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
 }
 
-resource "aws_security_group_rule" "allowed_egress_443" {
+resource "aws_security_group_rule" "this_allowed_egress_443" {
   count = var.enabled ? var.allowed_security_group_count : 0
 
   type                     = "egress"
@@ -150,15 +149,14 @@ resource "aws_security_group_rule" "allowed_egress_443" {
   security_group_id        = var.allowed_security_group_ids[count.index]
 }
 
-resource "aws_security_group_rule" "allowed_egress_443_cidrs" {
-  count = var.enabled ? length(var.allowed_cidrs) : 0
-
+resource "aws_security_group_rule" "this_allowed_egress_443_cidrs" {
+  count             = var.enabled ? 1 : 0
   type              = "egress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidrs
-  security_group_id = var.allowed_security_group_ids[count.index]
+  security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
 }
 
 # Worker SG
