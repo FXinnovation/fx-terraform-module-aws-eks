@@ -115,6 +115,7 @@ resource "aws_security_group_rule" "this_ingress_443" {
   protocol                 = "tcp"
   source_security_group_id = var.allowed_security_group_ids[count.index]
   security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
+  description              = "Allow tcp/443 from allowed security groups"
 }
 
 resource "aws_security_group_rule" "this_ingress_443_worker" {
@@ -126,6 +127,7 @@ resource "aws_security_group_rule" "this_ingress_443_worker" {
   protocol                 = "tcp"
   source_security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
   security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
+  description              = "Allow tcp/443 from worker security group"
 }
 
 resource "aws_security_group_rule" "this_ingress_443_cidrs" {
@@ -136,6 +138,7 @@ resource "aws_security_group_rule" "this_ingress_443_cidrs" {
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidrs
   security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+  description       = "Allow tcp/443 from allowed CIDRs"
 }
 
 resource "aws_security_group_rule" "this_allowed_egress_443" {
@@ -147,6 +150,7 @@ resource "aws_security_group_rule" "this_allowed_egress_443" {
   protocol                 = "tcp"
   source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
   security_group_id        = var.allowed_security_group_ids[count.index]
+  description              = "Allow tcp/443 to allowed security groups"
 }
 
 resource "aws_security_group_rule" "this_allowed_egress_highports" {
@@ -158,6 +162,7 @@ resource "aws_security_group_rule" "this_allowed_egress_highports" {
   protocol                 = "tcp"
   source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
   security_group_id        = var.allowed_security_group_ids[count.index]
+  description              = "Allow tcp/1025-65535 to allowed security groups"
 }
 
 resource "aws_security_group_rule" "this_allowed_egress_worker_443" {
@@ -168,6 +173,7 @@ resource "aws_security_group_rule" "this_allowed_egress_worker_443" {
   protocol                 = "tcp"
   source_security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
   security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
+  description              = "Allow tcp/443 to worker security group"
 }
 
 resource "aws_security_group_rule" "this_allowed_egress_worker_highports" {
@@ -178,6 +184,7 @@ resource "aws_security_group_rule" "this_allowed_egress_worker_highports" {
   protocol                 = "tcp"
   source_security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
   security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
+  description              = "Allow tcp/1025-65535 to worker security group"
 }
 
 resource "aws_security_group_rule" "this_allowed_egress_cidrs_443" {
@@ -188,6 +195,7 @@ resource "aws_security_group_rule" "this_allowed_egress_cidrs_443" {
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidrs
   security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+  description       = "Allow tcp/443 to allowed CIDRs"
 }
 
 resource "aws_security_group_rule" "this_allowed_egress_cidrs_highports" {
@@ -198,6 +206,7 @@ resource "aws_security_group_rule" "this_allowed_egress_cidrs_highports" {
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidrs
   security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+  description       = "Allow tcp/1025-65535 to allowed CIDRs"
 }
 
 # Worker SG
@@ -225,6 +234,7 @@ resource "aws_security_group_rule" "worker_ingress_self_any" {
   protocol          = "-1"
   self              = true
   security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
+  description       = "Allow all traffic from itself"
 }
 
 resource "aws_security_group_rule" "worker_ingress_controlplane_443" {
@@ -236,6 +246,7 @@ resource "aws_security_group_rule" "worker_ingress_controlplane_443" {
   protocol                 = "tcp"
   source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
   security_group_id        = element(concat(aws_security_group.worker.*.id, list("")), 0)
+  description              = "Allow tcp/443 from control plane"
 }
 
 resource "aws_security_group_rule" "worker_ingress_controlplane_highports" {
@@ -247,9 +258,8 @@ resource "aws_security_group_rule" "worker_ingress_controlplane_highports" {
   protocol                 = "tcp"
   source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
   security_group_id        = element(concat(aws_security_group.worker.*.id, list("")), 0)
+  description              = "Allow tcp/1025-65535 from control plane"
 }
-
-
 
 resource "aws_security_group_rule" "worker_egress_any" {
   count = var.enabled ? 1 : 0
@@ -260,6 +270,7 @@ resource "aws_security_group_rule" "worker_egress_any" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
+  description       = "Allow all outgoing traffic"
 }
 
 #####
