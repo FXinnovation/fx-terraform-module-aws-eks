@@ -1,6 +1,7 @@
 2.3.3
 =====
 
+  * fix: SG rules for communication on 443/highports between control plane and workers
   * fix: count for `this_ingress_443_cidrs` & `this_allowed_egress_443_cidrs`
   * fix: rename security group outbound rules for controlplane (`allowed...` -> `this_allowed...`)
   * fix: rename security group rules for worker (this... -> worker...)

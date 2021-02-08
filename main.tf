@@ -149,11 +149,52 @@ resource "aws_security_group_rule" "this_allowed_egress_443" {
   security_group_id        = var.allowed_security_group_ids[count.index]
 }
 
-resource "aws_security_group_rule" "this_allowed_egress_443_cidrs" {
+resource "aws_security_group_rule" "this_allowed_egress_highports" {
+  count = var.enabled ? var.allowed_security_group_count : 0
+
+  type                     = "egress"
+  from_port                = 1025
+  to_port                  = 65535
+  protocol                 = "tcp"
+  source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+  security_group_id        = var.allowed_security_group_ids[count.index]
+}
+
+resource "aws_security_group_rule" "this_allowed_egress_worker_443" {
+  count                    = var.enabled ? 1 : 0
+  type                     = "egress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
+  security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
+}
+
+resource "aws_security_group_rule" "this_allowed_egress_worker_highports" {
+  count                    = var.enabled ? 1 : 0
+  type                     = "egress"
+  from_port                = 1025
+  to_port                  = 65535
+  protocol                 = "tcp"
+  source_security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
+  security_group_id        = element(concat(aws_security_group.this.*.id, list("")), 0)
+}
+
+resource "aws_security_group_rule" "this_allowed_egress_cidrs_443" {
   count             = var.enabled ? 1 : 0
   type              = "egress"
   from_port         = 443
   to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = var.allowed_cidrs
+  security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+}
+
+resource "aws_security_group_rule" "this_allowed_egress_cidrs_highports" {
+  count             = var.enabled ? 1 : 0
+  type              = "egress"
+  from_port         = 1025
+  to_port           = 65535
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidrs
   security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
@@ -185,6 +226,30 @@ resource "aws_security_group_rule" "worker_ingress_self_any" {
   self              = true
   security_group_id = element(concat(aws_security_group.worker.*.id, list("")), 0)
 }
+
+resource "aws_security_group_rule" "worker_ingress_controlplane_443" {
+  count = var.enabled ? 1 : 0
+
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+  security_group_id        = element(concat(aws_security_group.worker.*.id, list("")), 0)
+}
+
+resource "aws_security_group_rule" "worker_ingress_controlplane_highports" {
+  count = var.enabled ? 1 : 0
+
+  type                     = "ingress"
+  from_port                = 1025
+  to_port                  = 65535
+  protocol                 = "tcp"
+  source_security_group_id = element(concat(aws_security_group.this.*.id, list("")), 0)
+  security_group_id        = element(concat(aws_security_group.worker.*.id, list("")), 0)
+}
+
+
 
 resource "aws_security_group_rule" "worker_egress_any" {
   count = var.enabled ? 1 : 0
