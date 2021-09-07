@@ -9,6 +9,7 @@ locals {
   vpc_id = data.aws_subnet.this.vpc_id
 }
 
+
 #####
 # EKS Cluster
 #####
@@ -45,6 +46,7 @@ resource "aws_eks_cluster" "this" {
     aws_iam_role_policy_attachment.master_service_policy
   ]
 }
+
 
 #####
 # IAM
@@ -85,6 +87,7 @@ resource "aws_iam_role_policy_attachment" "master_missing_policy_from_aws" {
   policy_arn = element(concat(aws_iam_policy.this.*.arn, list("")), 0)
   role       = element(concat(aws_iam_role.this.*.name, list("")), 0)
 }
+
 
 #####
 # Security group
@@ -273,6 +276,7 @@ resource "aws_security_group_rule" "worker_egress_any" {
   description       = "Allow all outgoing traffic"
 }
 
+
 #####
 # k8s auth
 #####
@@ -288,6 +292,7 @@ resource "kubernetes_config_map" "this" {
     "mapRoles" = yamlencode(var.aws_auth_configmap_data)
   }
 }
+
 
 #####
 # k8s IAM integration
