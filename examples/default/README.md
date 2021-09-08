@@ -1,7 +1,15 @@
 # terraform-module-aws-eks
 
-Terraform module to deploy EKS cluster on AWS.
-Optionally it can deploy ALB ingress controller.
+## Usage
+
+To run this example, you need to execute:
+
+```
+$ terraform init
+$ terraform plan
+$ terraform apply
+```
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
