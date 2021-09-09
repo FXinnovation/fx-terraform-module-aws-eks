@@ -6,18 +6,13 @@
 * chore: pins `pre-commit-terraform` to `v1.50.0`.
 * chore: pins `terraform` to `>= 0.14`.
 * chore: pins `aws` provider to `>= 3.0`.
-* chore: pins `pls` provider to `>= 3.0`.
+* chore: pins `tls` provider to `>= 3.0`.
 * chore: bumps `terraform` + providers versions in example:
   * pins `terraform` to `>= 0.14`.
   * pins `aws` provider to `>= 3.0`.
   * pins `eks` provider to `>= 2.0`.
   * pins `random` provider to `>= 3.0`.
-* chore: pins ssm-parameters module to latest version (`v5.0.0`).
 * refactor: example test cases:
-  * get rid of `disable` example.
-  * move example `rds-cluster` to `default`
-    according to the naming convention in the others modules,
-    we should always have at least a default example case.
   * add `providers.tf` files.
   * update `versions.tf` files with proper version contraints.
   * update `main.tf`, get rid of `aws` provider stanza.
