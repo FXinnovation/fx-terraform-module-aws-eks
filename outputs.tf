@@ -16,13 +16,11 @@ output "arn" {
 output "certificate_authority" {
   description = "Base 64 encoded certificate authority of the EKS cluster that is created."
   value       = element(concat(aws_eks_cluster.this.*.certificate_authority.0.data, list("")), 0)
-  sensitive   = true
 }
 
 output "endpoint" {
   description = "Endpoint of the EKS cluster that is created."
   value       = element(concat(aws_eks_cluster.this.*.endpoint, list("")), 0)
-  sensitive   = true
 }
 
 output "iam_role_name" {
