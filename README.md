@@ -22,7 +22,9 @@ Optionally it can deploy ALB ingress controller.
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_addons"></a> [addons](#module\_addons) | ./modules/add-ons | n/a |
 
 ## Resources
 
@@ -64,11 +66,13 @@ No modules.
 | <a name="input_allowed_security_group_count"></a> [allowed\_security\_group\_count](#input\_allowed\_security\_group\_count) | exact length of the `allowed_security_group_ids` variable. | `number` | `0` | no |
 | <a name="input_allowed_security_group_ids"></a> [allowed\_security\_group\_ids](#input\_allowed\_security\_group\_ids) | List of security group ID's that will be allowed to talk to the EKS cluster. | `list(string)` | `[]` | no |
 | <a name="input_aws_auth_configmap_data"></a> [aws\_auth\_configmap\_data](#input\_aws\_auth\_configmap\_data) | List of maps that represent the aws-auth data needed for EKS to work properly. https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html for more information. | `list` | `[]` | no |
+| <a name="input_coredns_addon_version"></a> [coredns\_addon\_version](#input\_coredns\_addon\_version) | Version of the core dns add-on. | `string` | `null` | no |
 | <a name="input_eks_tags"></a> [eks\_tags](#input\_eks\_tags) | Map of tags that will be applied on the EKS cluster. | `map` | `{}` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Whether or not to enable this module. | `bool` | `true` | no |
 | <a name="input_iam_policy_name"></a> [iam\_policy\_name](#input\_iam\_policy\_name) | Name of the additionnal IAM policy for the EKS cluster. | `string` | `"eks-cluster"` | no |
 | <a name="input_iam_role_name"></a> [iam\_role\_name](#input\_iam\_role\_name) | Name of the IAM role for the EKS cluster. | `string` | `"eks-cluster"` | no |
 | <a name="input_iam_role_tags"></a> [iam\_role\_tags](#input\_iam\_role\_tags) | Map of tags that will be applied on the IAM role. | `map` | `{}` | no |
+| <a name="input_kube_proxy_addon_version"></a> [kube\_proxy\_addon\_version](#input\_kube\_proxy\_addon\_version) | Version of the kube-proxy add-on. | `string` | `null` | no |
 | <a name="input_kubernetes_aws_iam_integration_enabled"></a> [kubernetes\_aws\_iam\_integration\_enabled](#input\_kubernetes\_aws\_iam\_integration\_enabled) | Whether or not to enable the IAM Integration in kubernetes (this will allow you to map AWS IAM roles to specific Kubernetes service acounts) | `bool` | `true` | no |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Version that will be used for the EKS cluster. | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the EKS cluster. | `string` | `"eks-cluster"` | no |
@@ -79,6 +83,7 @@ No modules.
 | <a name="input_security_group_tags"></a> [security\_group\_tags](#input\_security\_group\_tags) | Map of tags that will be applied on the security group. | `map` | `{}` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of subnet ID's where the EKS master will be available from. | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Map of tags that will be applied on all resources. | `map` | `{}` | no |
+| <a name="input_vpc_cni_addon_version"></a> [vpc\_cni\_addon\_version](#input\_vpc\_cni\_addon\_version) | Version of the vpc cni add-on. | `string` | `null` | no |
 | <a name="input_worker_security_group_name"></a> [worker\_security\_group\_name](#input\_worker\_security\_group\_name) | Name of the security group for the EKS cluster. | `string` | `"eks-workers-cluster"` | no |
 | <a name="input_worker_security_group_tags"></a> [worker\_security\_group\_tags](#input\_worker\_security\_group\_tags) | Map of tags that will be applied on the security group. | `map` | `{}` | no |
 

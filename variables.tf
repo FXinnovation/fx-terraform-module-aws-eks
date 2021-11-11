@@ -106,3 +106,21 @@ variable "kubernetes_aws_iam_integration_enabled" {
   description = "Whether or not to enable the IAM Integration in kubernetes (this will allow you to map AWS IAM roles to specific Kubernetes service acounts)"
   default     = true
 }
+
+variable "vpc_cni_addon_version" {
+  description = "Version of the vpc cni add-on."
+  default     = null
+  type        = string
+}
+
+variable "coredns_addon_version" {
+  description = "Version of the core dns add-on."
+  default     = null
+  type        = string
+}
+
+variable "kube_proxy_addon_version" {
+  description = "Version of the kube-proxy add-on."
+  default     = null
+  type        = string
+}
