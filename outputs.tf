@@ -90,7 +90,7 @@ output "iam_openid_connect_provider_url" {
 
 output "vpc_cni_addon_arn" {
   description = "ARN of the add-on vpc-cni."
-  value       = element(concat(module.addons.*.thvpc_cni_addon_arn, [""]), 0)
+  value       = element(concat(module.addons.*.vpc_cni_addon_arn, [""]), 0)
 }
 
 output "coredns_addon_arn" {
