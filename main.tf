@@ -18,7 +18,7 @@ resource "aws_eks_cluster" "this" {
   count = var.enabled ? 1 : 0
 
   name     = var.name
-  role_arn = element(concat(aws_iam_role.this.*.arn, tolist("")), 0)
+  role_arn = element(concat(aws_iam_role.this.*.arn, [""]), 0)
   version  = var.kubernetes_version
 
   vpc_config {
@@ -71,21 +71,21 @@ resource "aws_iam_role_policy_attachment" "master_cluster_policy" {
   count = var.enabled ? 1 : 0
 
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = element(concat(aws_iam_role.this.*.name, tolist("")), 0)
+  role       = element(concat(aws_iam_role.this.*.name, [""]), 0)
 }
 
 resource "aws_iam_role_policy_attachment" "master_service_policy" {
   count = var.enabled ? 1 : 0
 
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = element(concat(aws_iam_role.this.*.name, tolist("")), 0)
+  role       = element(concat(aws_iam_role.this.*.name, [""]), 0)
 }
 
 resource "aws_iam_role_policy_attachment" "master_missing_policy_from_aws" {
   count = var.enabled ? 1 : 0
 
-  policy_arn = element(concat(aws_iam_policy.this.*.arn, tolist("")), 0)
-  role       = element(concat(aws_iam_role.this.*.name, tolist("")), 0)
+  policy_arn = element(concat(aws_iam_policy.this.*.arn, [""]), 0)
+  role       = element(concat(aws_iam_role.this.*.name, [""]), 0)
 }
 
 
@@ -117,7 +117,7 @@ resource "aws_security_group_rule" "this_ingress_443" {
   to_port                  = 443
   protocol                 = "tcp"
   source_security_group_id = var.allowed_security_group_ids[count.index]
-  security_group_id        = element(concat(aws_security_group.this.*.id, tolist("")), 0)
+  security_group_id        = element(concat(aws_security_group.this.*.id, [""]), 0)
   description              = "Allow tcp/443 from allowed security groups"
 }
 
@@ -128,8 +128,8 @@ resource "aws_security_group_rule" "this_ingress_443_worker" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  source_security_group_id = element(concat(aws_security_group.worker.*.id, tolist("")), 0)
-  security_group_id        = element(concat(aws_security_group.this.*.id, tolist("")), 0)
+  source_security_group_id = element(concat(aws_security_group.worker.*.id, [""]), 0)
+  security_group_id        = element(concat(aws_security_group.this.*.id, [""]), 0)
   description              = "Allow tcp/443 from worker security group"
 }
 
@@ -140,7 +140,7 @@ resource "aws_security_group_rule" "this_ingress_443_cidrs" {
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidrs
-  security_group_id = element(concat(aws_security_group.this.*.id, tolist("")), 0)
+  security_group_id = element(concat(aws_security_group.this.*.id, [""]), 0)
   description       = "Allow tcp/443 from allowed CIDRs"
 }
 
@@ -151,7 +151,7 @@ resource "aws_security_group_rule" "this_allowed_egress_443" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  source_security_group_id = element(concat(aws_security_group.this.*.id, tolist("")), 0)
+  source_security_group_id = element(concat(aws_security_group.this.*.id, [""]), 0)
   security_group_id        = var.allowed_security_group_ids[count.index]
   description              = "Allow tcp/443 to allowed security groups"
 }
@@ -163,7 +163,7 @@ resource "aws_security_group_rule" "this_allowed_egress_highports" {
   from_port                = 1025
   to_port                  = 65535
   protocol                 = "tcp"
-  source_security_group_id = element(concat(aws_security_group.this.*.id, tolist("")), 0)
+  source_security_group_id = element(concat(aws_security_group.this.*.id, [""]), 0)
   security_group_id        = var.allowed_security_group_ids[count.index]
   description              = "Allow tcp/1025-65535 to allowed security groups"
 }
@@ -174,8 +174,8 @@ resource "aws_security_group_rule" "this_allowed_egress_worker_443" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  source_security_group_id = element(concat(aws_security_group.worker.*.id, tolist("")), 0)
-  security_group_id        = element(concat(aws_security_group.this.*.id, tolist("")), 0)
+  source_security_group_id = element(concat(aws_security_group.worker.*.id, [""]), 0)
+  security_group_id        = element(concat(aws_security_group.this.*.id, [""]), 0)
   description              = "Allow tcp/443 to worker security group"
 }
 
@@ -185,8 +185,8 @@ resource "aws_security_group_rule" "this_allowed_egress_worker_highports" {
   from_port                = 1025
   to_port                  = 65535
   protocol                 = "tcp"
-  source_security_group_id = element(concat(aws_security_group.worker.*.id, tolist("")), 0)
-  security_group_id        = element(concat(aws_security_group.this.*.id, tolist("")), 0)
+  source_security_group_id = element(concat(aws_security_group.worker.*.id, [""]), 0)
+  security_group_id        = element(concat(aws_security_group.this.*.id, [""]), 0)
   description              = "Allow tcp/1025-65535 to worker security group"
 }
 
@@ -197,7 +197,7 @@ resource "aws_security_group_rule" "this_allowed_egress_cidrs_443" {
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidrs
-  security_group_id = element(concat(aws_security_group.this.*.id, tolist("")), 0)
+  security_group_id = element(concat(aws_security_group.this.*.id, [""]), 0)
   description       = "Allow tcp/443 to allowed CIDRs"
 }
 
@@ -208,7 +208,7 @@ resource "aws_security_group_rule" "this_allowed_egress_cidrs_highports" {
   to_port           = 65535
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidrs
-  security_group_id = element(concat(aws_security_group.this.*.id, tolist("")), 0)
+  security_group_id = element(concat(aws_security_group.this.*.id, [""]), 0)
   description       = "Allow tcp/1025-65535 to allowed CIDRs"
 }
 
@@ -236,7 +236,7 @@ resource "aws_security_group_rule" "worker_ingress_self_any" {
   to_port           = 0
   protocol          = "-1"
   self              = true
-  security_group_id = element(concat(aws_security_group.worker.*.id, tolist("")), 0)
+  security_group_id = element(concat(aws_security_group.worker.*.id, [""]), 0)
   description       = "Allow all traffic from itself"
 }
 
@@ -247,8 +247,8 @@ resource "aws_security_group_rule" "worker_ingress_controlplane_443" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "tcp"
-  source_security_group_id = element(concat(aws_security_group.this.*.id, tolist("")), 0)
-  security_group_id        = element(concat(aws_security_group.worker.*.id, tolist("")), 0)
+  source_security_group_id = element(concat(aws_security_group.this.*.id, [""]), 0)
+  security_group_id        = element(concat(aws_security_group.worker.*.id, [""]), 0)
   description              = "Allow tcp/443 from control plane"
 }
 
@@ -259,8 +259,8 @@ resource "aws_security_group_rule" "worker_ingress_controlplane_highports" {
   from_port                = 1025
   to_port                  = 65535
   protocol                 = "tcp"
-  source_security_group_id = element(concat(aws_security_group.this.*.id, tolist("")), 0)
-  security_group_id        = element(concat(aws_security_group.worker.*.id, tolist("")), 0)
+  source_security_group_id = element(concat(aws_security_group.this.*.id, [""]), 0)
+  security_group_id        = element(concat(aws_security_group.worker.*.id, [""]), 0)
   description              = "Allow tcp/1025-65535 from control plane"
 }
 
@@ -272,7 +272,7 @@ resource "aws_security_group_rule" "worker_egress_any" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = element(concat(aws_security_group.worker.*.id, tolist("")), 0)
+  security_group_id = element(concat(aws_security_group.worker.*.id, [""]), 0)
   description       = "Allow all outgoing traffic"
 }
 
@@ -285,7 +285,7 @@ module "addons" {
 
   count = tonumber(split(".", var.kubernetes_version)[1]) > 17 ? 1 : 0
 
-  cluster_name             = element(concat(aws_eks_cluster.this.*.name, tolist("")), 0)
+  cluster_name             = element(concat(aws_eks_cluster.this.*.name, [""]), 0)
   vpc_cni_addon_version    = var.vpc_cni_addon_version
   coredns_addon_version    = var.coredns_addon_version
   kube_proxy_addon_version = var.kube_proxy_addon_version
@@ -315,7 +315,7 @@ resource "kubernetes_config_map" "this" {
 resource "aws_iam_openid_connect_provider" "this" {
   count = var.enabled && var.kubernetes_aws_iam_integration_enabled ? 1 : 0
 
-  url = element(concat(aws_eks_cluster.this.*.identity.0.oidc.0.issuer, tolist("")), 0)
+  url = element(concat(aws_eks_cluster.this.*.identity.0.oidc.0.issuer, [""]), 0)
 
   client_id_list = [
     "sts.amazonaws.com",

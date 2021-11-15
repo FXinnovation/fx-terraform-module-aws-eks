@@ -93,6 +93,7 @@ Optionally it can deploy ALB ingress controller.
 |------|-------------|
 | <a name="output_arn"></a> [arn](#output\_arn) | ARN of the EKS cluster that is created. |
 | <a name="output_certificate_authority"></a> [certificate\_authority](#output\_certificate\_authority) | Base 64 encoded certificate authority of the EKS cluster that is created. |
+| <a name="output_coredns_addon_arn"></a> [coredns\_addon\_arn](#output\_coredns\_addon\_arn) | ARN of the add-on coredns. |
 | <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | Endpoint of the EKS cluster that is created. |
 | <a name="output_iam_openid_connect_provider_arn"></a> [iam\_openid\_connect\_provider\_arn](#output\_iam\_openid\_connect\_provider\_arn) | n/a |
 | <a name="output_iam_openid_connect_provider_url"></a> [iam\_openid\_connect\_provider\_url](#output\_iam\_openid\_connect\_provider\_url) | n/a |
@@ -101,12 +102,14 @@ Optionally it can deploy ALB ingress controller.
 | <a name="output_iam_role_name"></a> [iam\_role\_name](#output\_iam\_role\_name) | Name of the IAM role that is created. |
 | <a name="output_iam_role_unique_id"></a> [iam\_role\_unique\_id](#output\_iam\_role\_unique\_id) | Uniauq ID of the IAM role that is created. |
 | <a name="output_id"></a> [id](#output\_id) | ID of the EKS cluster that is created. |
+| <a name="output_kube_proxy_addon_arn"></a> [kube\_proxy\_addon\_arn](#output\_kube\_proxy\_addon\_arn) | ARN of the add-on kube-proxy. |
 | <a name="output_kubernates_config_map_name"></a> [kubernates\_config\_map\_name](#output\_kubernates\_config\_map\_name) | Config map for EKS workers |
 | <a name="output_kubernetes_version"></a> [kubernetes\_version](#output\_kubernetes\_version) | Version of the EKS cluster. |
 | <a name="output_name"></a> [name](#output\_name) | Name of the EKS cluster that is created. |
 | <a name="output_security_group_arn"></a> [security\_group\_arn](#output\_security\_group\_arn) | ARN of the security group that is created. |
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | ID of the security group that is created. |
 | <a name="output_security_group_name"></a> [security\_group\_name](#output\_security\_group\_name) | Name of the security group that is created. |
+| <a name="output_vpc_cni_addon_arn"></a> [vpc\_cni\_addon\_arn](#output\_vpc\_cni\_addon\_arn) | ARN of the add-on vpc-cni. |
 | <a name="output_worker_security_group_arn"></a> [worker\_security\_group\_arn](#output\_worker\_security\_group\_arn) | ARN of the security group that is created for the workers. |
 | <a name="output_worker_security_group_id"></a> [worker\_security\_group\_id](#output\_worker\_security\_group\_id) | ID of the security group that is created for the workers |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
