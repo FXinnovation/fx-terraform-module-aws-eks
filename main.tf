@@ -283,7 +283,7 @@ resource "aws_security_group_rule" "worker_egress_any" {
 module "addons" {
   source = "./modules/add-ons"
 
-  count = var.kubernetes_version && tonumber(split(".", var.kubernetes_version)[1]) > 17 ? 1 : 0
+  count = var.kubernetes_version == null ? 0 : tonumber(split(".", var.kubernetes_version)[1]) > 17 ? 1 : 0
 
   cluster_name             = element(concat(aws_eks_cluster.this.*.name, [""]), 0)
   vpc_cni_addon_version    = var.vpc_cni_addon_version
