@@ -280,15 +280,14 @@ resource "aws_security_group_rule" "worker_egress_any" {
 # Add-ons
 #####
 
-module "addons" {
-  source = "./modules/add-ons"
+resource "aws_eks_addon" "this" {
+  for_each = var.enabled ? toset([]) : toset(var.eks_addons)
 
-  count = var.kubernetes_version == null ? 0 : tonumber(split(".", var.kubernetes_version)[1]) > 17 ? 1 : 0
-
-  cluster_name             = element(concat(aws_eks_cluster.this.*.name, [""]), 0)
-  vpc_cni_addon_version    = var.vpc_cni_addon_version
-  coredns_addon_version    = var.coredns_addon_version
-  kube_proxy_addon_version = var.kube_proxy_addon_version
+  cluster_name      = element(concat(aws_eks_cluster.this.*.name, [""]), 0)
+  addon_name        = each.value.name
+  addon_version     = each.value.version
+  resolve_conflicts = "OVERWRITE"
+  tags              = local.tags
 }
 
 #####

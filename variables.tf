@@ -107,20 +107,12 @@ variable "kubernetes_aws_iam_integration_enabled" {
   default     = true
 }
 
-variable "vpc_cni_addon_version" {
-  description = "Version of the vpc cni add-on."
-  default     = null
-  type        = string
-}
+variable "eks_addons" {
+  type = list(object({
+    name    = string
+    version = string
+  }))
 
-variable "coredns_addon_version" {
-  description = "Version of the core dns add-on."
-  default     = null
-  type        = string
-}
-
-variable "kube_proxy_addon_version" {
-  description = "Version of the kube-proxy add-on."
-  default     = null
-  type        = string
+  description = "List of eks addons to add."
+  default     = []
 }

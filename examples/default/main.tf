@@ -28,4 +28,19 @@ module "standard" {
   allowed_cidrs                = ["127.0.0.1/32"]
   allowed_security_group_ids   = [aws_security_group.standard.id]
   allowed_security_group_count = 1
+  kubernetes_version           = "1.21"
+  eks_addons = [
+    {
+      name    = "vpn-cni"
+      version = "v1.9.1-eksbuild.1"
+    },
+    {
+      name    = "coredns"
+      version = "v1.8.4-eksbuild.1"
+    },
+    {
+      name    = "kube-proxy"
+      version = "v1.21.2-eksbuild.2"
+    }
+  ]
 }

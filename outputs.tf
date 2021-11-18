@@ -88,17 +88,7 @@ output "iam_openid_connect_provider_url" {
   value = element(concat(aws_iam_openid_connect_provider.this.*.url, [""]), 0)
 }
 
-output "vpc_cni_addon_arn" {
-  description = "ARN of the add-on vpc-cni."
-  value       = element(concat(module.addons.*.vpc_cni_addon_arn, [""]), 0)
-}
-
-output "coredns_addon_arn" {
-  description = "ARN of the add-on coredns."
-  value       = element(concat(module.addons.*.coredns_addon_arn, [""]), 0)
-}
-
-output "kube_proxy_addon_arn" {
-  description = "ARN of the add-on kube-proxy."
-  value       = element(concat(module.addons.*.kube_proxy_addon_arn, [""]), 0)
+output "addons_arns" {
+  description = "ARNs of the addons."
+  value       = { for name, addon in aws_eks_addon.this : name => addon.arn }
 }
