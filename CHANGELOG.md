@@ -1,3 +1,15 @@
+3.1.0
+=====
+
+* feat: use one variable for addons
+* chore: update pre-commit
+* fix: adjust count on addons
+* feat: check if version is specified first
+* fix: var name mistake
+* feat: add outputs for addons
+* feat: add addon resource when cluster is 1.18 or more
+* fix: use https for precommit
+
 3.0.0
 =====
 
