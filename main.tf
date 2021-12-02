@@ -281,7 +281,7 @@ resource "aws_security_group_rule" "worker_egress_any" {
 #####
 
 resource "aws_eks_addon" "this" {
-  for_each = var.enabled ? toset([]) : toset(var.eks_addons)
+  for_each = var.enabled ? toset(var.eks_addons) : toset([])
 
   cluster_name      = element(concat(aws_eks_cluster.this.*.name, [""]), 0)
   addon_name        = each.value.name
