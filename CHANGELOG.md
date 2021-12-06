@@ -1,3 +1,9 @@
+3.1.1
+=====
+
+* fix: fix the for_each for addons
+* fix: correctly set the condition for addons
+
 3.1.0
 =====
 
