@@ -31,7 +31,7 @@ module "standard" {
   kubernetes_version           = "1.21"
   eks_addons = [
     {
-      name    = "vpn-cni"
+      name    = "vpc-cni"
       version = "v1.9.1-eksbuild.1"
     },
     {
