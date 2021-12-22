@@ -36,6 +36,7 @@ No modules.
 | [aws_iam_role_policy_attachment.master_cluster_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.master_missing_policy_from_aws](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.master_service_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.master_vpc_resource_controller_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_security_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.worker](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group_rule.this_allowed_egress_443](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
@@ -67,6 +68,7 @@ No modules.
 | <a name="input_aws_auth_configmap_data"></a> [aws\_auth\_configmap\_data](#input\_aws\_auth\_configmap\_data) | List of maps that represent the aws-auth data needed for EKS to work properly. https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html for more information. | `list` | `[]` | no |
 | <a name="input_eks_addons"></a> [eks\_addons](#input\_eks\_addons) | List of eks addons to add. | <pre>list(object({<br>    name    = string<br>    version = string<br>  }))</pre> | `[]` | no |
 | <a name="input_eks_tags"></a> [eks\_tags](#input\_eks\_tags) | Map of tags that will be applied on the EKS cluster. | `map` | `{}` | no |
+| <a name="input_enable_vpc_resource_controller"></a> [enable\_vpc\_resource\_controller](#input\_enable\_vpc\_resource\_controller) | Add VPC Resource Controller policy to the cluster iam role. | `bool` | `false` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Whether or not to enable this module. | `bool` | `true` | no |
 | <a name="input_iam_policy_name"></a> [iam\_policy\_name](#input\_iam\_policy\_name) | Name of the additionnal IAM policy for the EKS cluster. | `string` | `"eks-cluster"` | no |
 | <a name="input_iam_role_name"></a> [iam\_role\_name](#input\_iam\_role\_name) | Name of the IAM role for the EKS cluster. | `string` | `"eks-cluster"` | no |

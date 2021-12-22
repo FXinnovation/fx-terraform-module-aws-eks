@@ -81,6 +81,13 @@ resource "aws_iam_role_policy_attachment" "master_service_policy" {
   role       = element(concat(aws_iam_role.this.*.name, [""]), 0)
 }
 
+resource "aws_iam_role_policy_attachment" "master_vpc_resource_controller_policy" {
+  count = var.enabled && var.enable_vpc_resource_controller ? 1 : 0
+
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  role       = element(concat(aws_iam_role.this.*.name, [""]), 0)
+}
+
 resource "aws_iam_role_policy_attachment" "master_missing_policy_from_aws" {
   count = var.enabled ? 1 : 0
 

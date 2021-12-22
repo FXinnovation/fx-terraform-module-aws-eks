@@ -31,6 +31,11 @@ variable "enabled" {
   default     = true
 }
 
+variable "enable_vpc_resource_controller" {
+  description = "Add VPC Resource Controller policy to the cluster iam role."
+  default     = false
+}
+
 variable "iam_role_name" {
   description = "Name of the IAM role for the EKS cluster."
   default     = "eks-cluster"
