@@ -35,10 +35,6 @@ module "standard" {
       version = "v1.9.1-eksbuild.1"
     },
     {
-      name    = "coredns"
-      version = "v1.8.4-eksbuild.1"
-    },
-    {
       name    = "kube-proxy"
       version = "v1.21.2-eksbuild.2"
     }
