@@ -1,3 +1,8 @@
+3.1.2
+=====
+
+* feat: add eksvpc resource controller iam policy
+
 3.1.1
 =====
 
