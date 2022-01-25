@@ -310,6 +310,7 @@ resource "kubernetes_config_map" "this" {
   }
   data = {
     "mapRoles" = yamlencode(var.aws_auth_configmap_data)
+    "mapUsers" = yamlencode(var.aws_auth_configmap_data_users)
   }
 }
 

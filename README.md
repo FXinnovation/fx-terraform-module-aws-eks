@@ -66,6 +66,7 @@ No modules.
 | <a name="input_allowed_security_group_count"></a> [allowed\_security\_group\_count](#input\_allowed\_security\_group\_count) | exact length of the `allowed_security_group_ids` variable. | `number` | `0` | no |
 | <a name="input_allowed_security_group_ids"></a> [allowed\_security\_group\_ids](#input\_allowed\_security\_group\_ids) | List of security group ID's that will be allowed to talk to the EKS cluster. | `list(string)` | `[]` | no |
 | <a name="input_aws_auth_configmap_data"></a> [aws\_auth\_configmap\_data](#input\_aws\_auth\_configmap\_data) | List of maps that represent the aws-auth data needed for EKS to work properly. https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html for more information. | `list` | `[]` | no |
+| <a name="input_aws_auth_configmap_data_users"></a> [aws\_auth\_configmap\_data\_users](#input\_aws\_auth\_configmap\_data\_users) | List of maps that contain users to add in the aws-auth data. | `list` | `[]` | no |
 | <a name="input_eks_addons"></a> [eks\_addons](#input\_eks\_addons) | List of eks addons to add. | <pre>list(object({<br>    name    = string<br>    version = string<br>  }))</pre> | `[]` | no |
 | <a name="input_eks_tags"></a> [eks\_tags](#input\_eks\_tags) | Map of tags that will be applied on the EKS cluster. | `map` | `{}` | no |
 | <a name="input_enable_vpc_resource_controller"></a> [enable\_vpc\_resource\_controller](#input\_enable\_vpc\_resource\_controller) | Add VPC Resource Controller policy to the cluster iam role. | `bool` | `false` | no |

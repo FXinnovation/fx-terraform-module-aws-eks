@@ -21,6 +21,11 @@ variable "aws_auth_configmap_data" {
   default     = []
 }
 
+variable "aws_auth_configmap_data_users" {
+  description = "List of maps that contain users to add in the aws-auth data."
+  default     = []
+}
+
 variable "eks_tags" {
   description = "Map of tags that will be applied on the EKS cluster."
   default     = {}

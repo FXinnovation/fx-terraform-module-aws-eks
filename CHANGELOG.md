@@ -1,3 +1,9 @@
+3.2.0
+=====
+
+* feat: allow to add a list of users in the aws-auth config map
+* chore: update pre-commit
+
 3.1.2
 =====
 
