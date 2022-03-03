@@ -39,5 +39,5 @@ data "aws_iam_policy_document" "allow_ec2_describe" {
 data "tls_certificate" "this" {
   count = var.enabled ? 1 : 0
 
-  url = element(concat(aws_eks_cluster.this.*.identity.0.oidc.0.issuer, list("https://example.local")), 0)
+  url = element(concat(aws_eks_cluster.this.*.identity.0.oidc.0.issuer, ["https://example.local"]), 0)
 }
